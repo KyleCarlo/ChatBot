@@ -54,3 +54,6 @@ main :-
     */
     demographics(Name, Age, Sex),
     askSymptom(Input, ('Do you have a cough? '), tb(1)).
+    /*
+        
+    */
