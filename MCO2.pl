@@ -7,17 +7,30 @@ demographics(Name, Age, Sex) :-
     read(Name),
     write('What is your age? '),
     read(Age),
-    write('What is your sex? (M/F) '),
+    write('What is your sex? (m/f) '),
     read(Sex).
 
-askSymptom(Input, Question) :-
+askSex(Input, Question) :-
+    write(Question),
+    read(X),
+    (
+        Input = 'm';
+        Input = 'f';
+        (
+            Input = X ->
+                askSex(Input, Question)
+        )
+    ).
+
+
+askSymptom(Input, Question, Predicate) :-
     write(Question),
     read(X),
     (
         (
             X = 'y' -> 
             (
-                assert(tb(1)),
+                assert(Predicate),
                 count_predicates(Count),
                 format('TB ~w', [Count])
             )
@@ -40,4 +53,4 @@ main :-
         If you have tuberculosis, add 1 to TB score.
     */
     demographics(Name, Age, Sex),
-    askSymptom(Input, ('Do you have a cough? ')).
+    askSymptom(Input, ('Do you have a cough? '), tb(1)).
