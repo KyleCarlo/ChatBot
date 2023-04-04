@@ -4,26 +4,13 @@
 *   Author: 
 *       BACOSA, Gabriel
 *       CUALES, Bianca 
-*       LASALA, Kyle
+*       LASALA, Kyle 
 *       REYNADO, Alyza
 *   
 *   Description:
 *       This is a chatbot that will ask the user about their symptoms and will
 *       provide a possible diagnosis based on the answers given.
 */
-
-/**
-*   Parameters:
-*       Count - The number of predicates that are currently asserted
-*   Description:
-*       Counts the number of predicates that are currently asserted
-*/
-:- use_module(library(tty)).
-
-
-count_predicates(Count, What) :-
-    findall(_, What, Predicates),
-    length(Predicates, Count).
 
 /**
 *   Parameters:
@@ -171,4 +158,6 @@ main :-
     askSymptom('Are you experiencing frequent pooping? (y/n) ', frequent_poop(1), Answer);
 
     diarrhea ->
-        write('you have diarrhea').
+        write('you have diarrhea');
+
+    
