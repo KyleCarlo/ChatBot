@@ -240,12 +240,11 @@ main :-
     % write('========================================================================'), nl,
 
     % Ask for the symptoms with duplication.
-    askSymptom('Do you have a fever? (y/n) ', fever(1), Answer),                    % Similarity Count: 9
+    askSymptom('Do you have a fever? (y/n) ', fever(1), Answer1),                    % Similarity Count: 9
     (
-        (
-            % If the patient has fever, increase all except bronchitis
-            Answer = 'y' ->
-                add_diarrhea,
+        Answer1 = 'y' -> 
+            (
+                add_diarrhea, 
                 add_influenza,
                 add_tuberculosis,
                 add_chicken_pox,
@@ -254,22 +253,83 @@ main :-
                 add_schistosomiasis,
                 add_dengue,
                 add_tetanus
-        );
-        Answer = 'n'
+            );
+        Answer1 = 'n' -> true
     ),
-    askSymptom('Do you have a headache? (y/n) ', head_ache(1), Answer),             % Similarity Count: 6
-    askSymptom('Are you experiencing coughing? (y/n) ', cough(1), Answer),          % Similarity Count: 5
-    askSymptom('Have you vomited recently? (y/n) ', vomiting(1), Answer),           % Similarity Count: 4
-    askSymptom('Are you experiencing body aches? (y/n) ', body_ache(1), Answer),    % Similarity Count: 4
-    askSymptom('Are you experiencing fatigue? (y/n) ', fatigue(1), Answer),         % Similarity Count: 4
-    askSymptom('Are you experiencing rashes? (y/n) ', rashes(1), Answer),           % Similarity Count: 4
+    askSymptom('Do you have a headache? (y/n) ', head_ache(1), Answer2),             % Similarity Count: 6
+    (
+        Answer2 = 'y' -> 
+            (
+                add_diarrhea,
+                add_bronchitis,
+                add_influenza,
+                add_chicken_pox,
+                add_malaria,
+                add_tetanus
+            );
+        Answer2 = 'n' -> true
+    ),
+    askSymptom('Are you experiencing coughing? (y/n) ', cough(1), Answer3),          % Similarity Count: 5
+    (
+        Answer3 = 'y' ->
+            (
+                add_bronchitis,
+                add_influenza,
+                add_tuberculosis,
+                add_measles,
+                add_schistosomiasis
+            );
+        Answer3 = 'n' -> true
+    ),
+    askSymptom('Have you vomited recently? (y/n) ', vomiting(1), Answer4),           % Similarity Count: 4
+    (
+        Answer4 = 'y' ->
+            (
+                add_diarrhea,
+                add_influenza,
+                add_malaria,
+                add_dengue
+            );
+        Answer4 = 'n' -> true
+    ),
+    askSymptom('Are you experiencing body aches? (y/n) ', body_ache(1), Answer5),    % Similarity Count: 4
+    (
+        Answer5 = 'y' ->
+            (
+                add_diarrhea,
+                add_bronchitis,
+                add_malaria,
+                add_schistosomiasis
+            );
+        Answer5 = 'n' -> true
+    ),
+    askSymptom('Are you experiencing fatigue? (y/n) ', fatigue(1), Answer6),         % Similarity Count: 4
+    (
+        Answer6 = 'y' ->
+            (
+                add_bronchitis,
+                add_influenza,
+                add_chicken_pox,
+                add_dengue
+            );
+        Answer6 = 'n' -> true
+    ),
+    askSymptom('Are you experiencing rashes? (y/n) ', rashes(1), Answer7),           % Similarity Count: 4
+    (
+        Answer7 = 'y' ->
+            (
+                add_chicken_pox,
+                add_measles,
+                add_schistosomiasis,
+                add_dengue
+            );
+        Answer7 = 'n' -> true
+    ).
 
-    % Specific for diarrhea
-    askSymptom('Do you have stomach pain? (y/n) ', stomach_ache(1), Answer),
-    askSymptom('Are you experiencing watery stool? (y/n) ', watery_stool(1), Answer),
-    askSymptom('Are you experiencing frequent pooping? (y/n) ', frequent_poop(1), Answer),
+    % % Specific for diarrhea
+    % askSymptom('Do you have stomach pain? (y/n) ', stomach_ache(1), Answer8),
+    % askSymptom('Are you experiencing watery stool? (y/n) ', watery_stool(1), Answer9),
+    % askSymptom('Are you experiencing frequent pooping? (y/n) ', frequent_poop(1), Answer10);
 
-    (diarrhea_confirm ->
-        write('you have diarrhea')).
-
-    
+    % (diarrhea_confirm ->
+    %     write('you have diarrhea')).
