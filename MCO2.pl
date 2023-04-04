@@ -21,8 +21,8 @@
 :- use_module(library(tty)).
 
 
-count_predicates(Count) :-
-    findall(_, tb(_), Predicates),
+count_predicates(Count, What) :-
+    findall(_, What, Predicates),
     length(Predicates, Count).
 
 /**
@@ -89,6 +89,7 @@ introduction :-
     write('========================================================================'), nl,
     write('If asked about the NAME, kindly put your name inside a quotation (" ").'), nl,nl,
     write('If asked about the AGE, kindly input a whole number (e.g. 20).'), nl,nl,
+    write('If asked about a YES/NO question, input "y" for YES and "n" for NO.'), nl,nl,
     write('Every after the INPUT, please put a period (.) before you enter.'), nl,
     write('========================================================================'), nl, nl,
     write('If you have read and understood, please type anything to continue'), nl,
@@ -123,7 +124,6 @@ diarrhea :-
      */
 
 % Initialization of dyanmic predicates
-:- dynamic(tb/1).
 
 :- initialization(main).
 main :- 
@@ -140,4 +140,3 @@ main :-
     write('========================================================================'), nl,
     write('                               SYMPTOMS'), nl,
     write('========================================================================'), nl.
-
