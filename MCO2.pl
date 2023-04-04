@@ -107,6 +107,77 @@ askSymptom(Question, Predicate, Answer) :-
         )
     ).
 
+/**
+*   Parameters:
+*       L - The list of values
+*       X - The starting index
+*       MaxIndex - The index of the maximum value
+*   Description:
+*       Helper function for finding the index of the maximum value
+*       This function is the base case
+*/
+index_of_Max([L|List], X, MaxIndex) :- 
+    length([L|List], Length), 
+    X >= Length,
+    retractall(max(_)),
+    asserta(max(MaxIndex)).
+
+/**
+*   Parameters:
+*       L - The list of values
+*       X - The starting index
+*       MaxIndex - The index of the maximum value
+*   Description:
+*       This function finds the index of the maximum value
+*       This function is the recursive case
+*/
+index_of_Max([L|List], X, MaxIndex) :- 
+    nth0(X, [L|List], Value),
+    (
+        X > 0 ->
+            (
+                (
+                    nth0(MaxIndex, [L|List], Max),
+                    Value > Max -> 
+                        (NewMaxIndex is X)
+                );
+                (
+                    nth0(MaxIndex, [L|List], Max),
+                    Value =< Max -> 
+                        (NewMaxIndex is MaxIndex)
+                )
+            );
+        X = 0 -> NewMaxIndex is X
+    ),
+    Y is X + 1,
+    index_of_Max([L|List], Y, NewMaxIndex).
+
+/**
+*   Parameters:
+*       Highest - disease with the highest value
+*   Description:
+*       This function finds the disease with the highest value
+*/
+getScore(Highest) :- 
+    diarrhea(Diarrhea),
+    bronchitis(Bronchitis),
+    influenza(Influenza),
+    tuberculosis(Tuberculosis),
+    chicken_pox(ChickenPox),
+    measles(Measles),
+    malaria(Malaria),
+    schistosomiasis(Schistosomiasis),
+    dengue(Dengue),
+    [_|Diseases] = [_, Diarrhea, Bronchitis, Influenza, 
+                    Tuberculosis, ChickenPox, Measles, 
+                    Malaria, Schistosomiasis, Dengue],
+    [_|DisWords] = [_, 'Diarrhea', 'Bronchitis', 'Influenza', 
+                    'Tuberculosis', 'Chicken Pox', 'Measles', 
+                    'Malaria', 'Schistosomiasis', 'Dengue'],
+    index_of_Max(Diseases, 0, _),
+    max(Index),
+    nth0(Index, DisWords, Highest).
+
 % Disease Scores
 % 1 - Diarrhea
 :- dynamic diarrhea/1.
@@ -324,7 +395,11 @@ main :-
                 add_dengue
             );
         Answer7 = 'n' -> true
-    ).
+    ),
+
+    % Score the diseases
+    getScore(Highest),
+    write(Highest).
 
     % % Specific for diarrhea
     % askSymptom('Do you have stomach pain? (y/n) ', stomach_ache(1), Answer8),
