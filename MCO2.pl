@@ -18,6 +18,9 @@
 *   Description:
 *       Counts the number of predicates that are currently asserted
 */
+:- use_module(library(tty)).
+
+
 count_predicates(Count) :-
     findall(_, tb(_), Predicates),
     length(Predicates, Count).
@@ -29,11 +32,13 @@ count_predicates(Count) :-
 *   Description:
 *       Asks the patient for their name, age, and sex
 */
-demographics(Name, Age) :-
-    write('What is your name? '),
+demographics :-
+    write('Name: '),
     read(Name),
-    write('What is your age? '),
+    assert(name(Name)),
+    write('Age: '),
     read(Age),
+    assert(age(Age)),
     askSex.
 
 /**
@@ -82,7 +87,13 @@ introduction :-
     write('========================================================================'), nl,
     write('                              INSTRUCTIONS'), nl,
     write('========================================================================'), nl,
-    write('').
+    write('If asked about the NAME, kindly put your name inside a quotation (" ").'), nl,nl,
+    write('If asked about the AGE, kindly input a whole number (e.g. 20).'), nl,nl,
+    write('Every after the INPUT, please put a period (.) before you enter.'), nl,
+    write('========================================================================'), nl, nl,
+    write('If you have read and understood, please type anything to continue'), nl,
+    write('followed by a period (.) and press enter.'), nl,
+    read(_), nl, nl.
     
 
 askSymptom(Question, Predicate) :-
@@ -104,18 +115,29 @@ askSymptom(Question, Predicate) :-
         )
     ).
 
+/*
+diarrhea :-
+    X = ['Do you have water stool?', 
+     'Are you experiencing vomiting?',
+     'Do you have abdominal pain?',].
+     */
+
 % Initialization of dyanmic predicates
 :- dynamic(tb/1).
 
 :- initialization(main).
 main :- 
     % Ask for the patient's name, age, and sex
-    introduction.
-    % demographics(Name, Age).
-    demographics(Name, Age),
+    introduction,
     write('========================================================================'), nl,
     write('                          PATIENT INFORMATION'), nl,
     write('========================================================================'), nl,
-    format('Name: ~w', [Name]), nl,
-    format('Age: ~w', [Age]), nl,
-    format().
+    % Ask for the demographics of the patient.
+    demographics,
+    write('========================================================================'), nl,nl,nl,
+
+    % Ask for the patient's symptoms.
+    write('========================================================================'), nl,
+    write('                               SYMPTOMS'), nl,
+    write('========================================================================'), nl.
+
