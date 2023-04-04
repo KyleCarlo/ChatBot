@@ -96,47 +96,79 @@ introduction :-
     write('followed by a period (.) and press enter.'), nl,
     read(_), nl, nl.
     
-
-askSymptom(Question, Predicate) :-
+/**
+*   Parameters:
+*       Question - The question to be asked
+*       Predicate - The predicate to be asserted
+*   Description:
+*       Asks the patient for their symptoms
+*/
+askSymptom(Question, Predicate, Answer) :-
     write(Question),
     read(Input),
     (
-        (
-            Input = 'y' -> 
-            (
-                assert(Predicate),
-                count_predicates(Count),
-                format('TB ~w', [Count])
-            )
-        );
-        Input = 'n';
+        % if the input is y, assert the predicate and count the number of predicates
+        Input = 'y' -> assert(Predicate), Answer = 'y';
+
+        % if the input is n, do not assert the predicate
+        Input = 'n' -> Answer = 'n';
+
+        % if the input is not y or n, ask again
         (
             format('Invalid input. Please enter \'y\' or \'n\'.'), nl,
-            askSymptom(Question, Predicate)
+            askSymptom(Question, Predicate, Answer)
         )
     ).
 
-/*
-diarrhea :-
-    X = ['Do you have water stool?', 
-     'Are you experiencing vomiting?',
-     'Do you have abdominal pain?',].
-     */
+% Initialize Diseases
+diarrhea :- 
+    watery_stool(1),
+    frequent_poop(1);
+    (
+        vomiting(1);
+        fever(1);
+        body_ache(1);
+        head_ache(1);
+        stomach_ache(1)
+    ).
 
-% Initialization of dyanmic predicates
+bronchitis :-
+    soreness_chest(1),
+    cough(1),
+    sore_throat(1);
+    (
+        body_ache(1);
+        head_ache(1)
+    ).
 
 :- initialization(main).
 main :- 
-    % Ask for the patient's name, age, and sex
-    introduction,
-    write('========================================================================'), nl,
-    write('                          PATIENT INFORMATION'), nl,
-    write('========================================================================'), nl,
-    % Ask for the demographics of the patient.
-    demographics,
-    write('========================================================================'), nl,nl,nl,
+    % % Ask for the patient's name, age, and sex
+    % introduction,
+    % write('========================================================================'), nl,
+    % write('                          PATIENT INFORMATION'), nl,
+    % write('========================================================================'), nl,
+    % % Ask for the demographics of the patient.
+    % demographics,
+    % write('========================================================================'), nl,nl,nl,
 
-    % Ask for the patient's symptoms.
-    write('========================================================================'), nl,
-    write('                               SYMPTOMS'), nl,
-    write('========================================================================'), nl.
+    % write('========================================================================'), nl,
+    % write('                               SYMPTOMS'), nl,
+    % write('========================================================================'), nl,
+
+    % Ask for the symptoms with duplication.
+    askSymptom('Do you have a fever? (y/n) ', fever(1), Answer),                    % Similarity Count: 9
+    askSymptom('Do you have a headache? (y/n) ', head_ache(1), Answer),             % Similarity Count: 6
+    askSymptom('Are you experiencing coughing? (y/n) ', cough(1), Answer),          % Similarity Count: 5
+    askSymptom('Have you vomited recently? (y/n) ', vomiting(1), Answer),           % Similarity Count: 4
+    askSymptom('Are you experiencing body aches? (y/n) ', body_ache(1), Answer),    % Similarity Count: 4
+    askSymptom('Are you experiencing fatigue? (y/n) ', fatigue(1), Answer),         % Similarity Count: 4
+    askSymptom('Are you experiencing rashes? (y/n) ', rashes(1), Answer),           % Similarity Count: 4
+
+    % Specific for diarrhea
+    askSymptom('Do you have stomach pain? (y/n) ', stomach_ache(1), Answer),
+    askSymptom('Are you experiencing watery stool? (y/n) ', watery_stool(1), Answer),
+    askSymptom('Are you experiencing frequent pooping? (y/n) ', frequent_poop(1), Answer);
+
+    diarrhea ->
+        write('you have diarrhea').
