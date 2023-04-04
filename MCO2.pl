@@ -2,59 +2,54 @@ count_predicates(Count) :-
     findall(_, tb(_), Predicates),
     length(Predicates, Count).
 
-demographics(Name, Age, Sex) :-
+demographics(Name, Age) :-
     write('What is your name? '),
     read(Name),
     write('What is your age? '),
     read(Age),
-    write('What is your sex? (m/f) '),
-    read(Sex).
+    askSex.
 
-askSex(Input, Question) :-
-    write(Question),
-    read(X),
+askSex :-
+    write('What is your sex? (m/f) '),
+    read(Input),
     (
-        Input = 'm';
-        Input = 'f';
+        Input = 'm' -> assert(sex(male));
+        Input = 'f' -> assert(sex(female));
+        Input = X -> 
         (
-            Input = X ->
-                askSex(Input, Question)
+            format('Invalid input. Please enter \'m\' or \'f\'.'), nl,
+            askSex
         )
     ).
 
 
-askSymptom(Input, Question, Predicate) :-
+askSymptom(Question, Predicate) :-
     write(Question),
-    read(X),
+    read(Input),
     (
         (
-            X = 'y' -> 
+            Input = 'y' -> 
             (
                 assert(Predicate),
                 count_predicates(Count),
                 format('TB ~w', [Count])
             )
         );
-        X = 'n';
+        Input = 'n';
         (
-            X = Y ->
+            Input = Y ->
             (
                 format('Invalid input. Please enter \'y\' or \'n\'.'), nl,
-                askSymptom(Input, Question)
+                askSymptom(Question, Predicate)
             )
         )
     ).
 
+% Initialization of dyanmic predicates
 :- dynamic(tb/1).
 
 :- initialization(main).
 main :- 
-    /*
-        If you have tuberculosis, add 1 to TB score.
-    */
-    demographics(Name, Age, Sex),
-    askSymptom(Input, ('Do you have a cough? '), tb(1)).
-
-    /*
-        testing commit
-    */
+    % Ask for the patient's name, age, and sex
+    demographics(Name, Age),
+    askSymptom(('Do you have a cough? '), tb(1)).
