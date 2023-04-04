@@ -297,18 +297,18 @@ bronchitis_confirm :-
 
 :- initialization(main).
 main :- 
-    % % Ask for the patient's name, age, and sex
-    % introduction,
-    % write('========================================================================'), nl,
-    % write('                          PATIENT INFORMATION'), nl,
-    % write('========================================================================'), nl,
-    % % Ask for the demographics of the patient.
-    % demographics,
-    % write('========================================================================'), nl,nl,nl,
+    % Ask for the patient's name, age, and sex
+    introduction,
+    write('========================================================================'), nl,
+    write('                          PATIENT INFORMATION'), nl,
+    write('========================================================================'), nl,
+    % Ask for the demographics of the patient.
+    demographics,
+    write('========================================================================'), nl,nl,nl,
 
-    % write('========================================================================'), nl,
-    % write('                               SYMPTOMS'), nl,
-    % write('========================================================================'), nl,
+    write('========================================================================'), nl,
+    write('                               SYMPTOMS'), nl,
+    write('========================================================================'), nl,
 
     % Ask for the symptoms with duplication.
     askSymptom('Do you have a fever? (y/n) ', fever(1), Answer1),                    % Similarity Count: 9
