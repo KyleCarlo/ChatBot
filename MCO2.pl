@@ -401,116 +401,109 @@ add_tetanus :-
 
 % Initialize Diseases
 diarrhea_confirm :- 
-    current_predicate(watery_stool/1),
-    current_predicate(frequent_poop/1),
+    watery_stool(1),
+    frequent_poop(1),
     (
-        current_predicate(vomiting/1);
-        current_predicate(fever/1);
-        current_predicate(body_ache/1);
-        current_predicate(head_ache/1);
-        current_predicate(stomach_ache/1)
+        vomiting(1);
+        fever(1);
+        body_ache(1);
+        head_ache(1);
+        stomach_ache(1)
     ).
 
 bronchitis_confirm :-
-    current_predicate(soreness_chest/1),
-    current_predicate(cough/1),
+    soreness_chest(1),
+    cough(1),
     (
-        current_predicate(sore_throat/1);
-        current_predicate(body_ache/1);
-        current_predicate(head_ache/1)
+        sore_throat(1);
+        body_ache(1);
+        head_ache(1)
     ).
 
 influenza_confirm :-
-    current_predicate(fever/1),
-    current_predicate(cough/1),
-    current_predicate(head_ache/1),
-    current_predicate(fatigue/1),
+    fever(1),
+    head_ache(1),
+    fatigue(1),
     (
-        current_predicate(cough/1);
-        current_predicate(runny_nose/1);
-        current_predicate(sore_throat/1);
-        current_predicate(vomiting/1);
-        current_predicate(watery_stool/1)
+        cough(1);
+        runny_nose(1);
+        sore_throat(1);
+        vomiting(1);
+        watery_stool(1)
     ).
 
 % Symptoms of Diseases
 diarrhea_specifics :-
     (
-        current_predicate(stomach_ache/1);
+        (current_predicate(stomach_ache/1), stomach_ache(_)) -> true;
         askSymptom('Do you have stomach ache? (y/n) ', stomach_ache(1), _)
     ),
     (
-        current_predicate(watery_stool/1);
+        (current_predicate(watery_stool/1), watery_stool(_)) -> true;
         askSymptom('Do you have watery stool? (y/n) ', watery_stool(1), Answer8),
         (
             Answer8 = 'y' -> 
                 (
                     add_influenza
                 );
-            Answer8 = 'n' -> true
+            Answer8 = 'n' -> assert(watery_stool(0))
         )
     ),
     (
-        current_predicate(frequent_poop/1);
+        (current_predicate(frequent_poop/1), frequent_poop(_)) -> true;
         askSymptom('Do you have frequent pooping? (y/n) ', frequent_poop(1), Answer9),
         (
             Answer9 = 'y' -> 
                 (
                     add_tuberculosis
                 );
-            Answer9 = 'n' -> true
+            Answer9 = 'n' -> assert(frequent_poop(0))
         )
     ).
 
 bronchitis_specifics :- 
     (
+        
+        (current_predicate(soreness_chest/1), soreness_chest(_)) -> true;
+        askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', soreness_chest(1), Answer8),
         (
-            current_predicate(soreness_chest/1);
-            askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', 
-                        soreness_chest(1), Answer8),
-            (
-                Answer8 = 'y' ->
-                    (
-                        add_influenza,
-                        add_bronchitis
-                    );
-                Answer8 = 'n' -> true
-            )
-        ),
+            Answer8 = 'y' -> true;
+            Answer8 = 'n' -> assert(soreness_chest(0))
+        )
+    ),
+    (
+        (current_predicate(sore_throat/1), sore_throat(_)) -> true;
+        askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer9),
         (
-            current_predicate(runny_nose/1);
-            askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer9),
-            (
-                Answer9 = 'y' ->
-                    (
-                        add_influenza
-                    );
-                Answer9 = 'n' -> true
-            )
+            Answer9 = 'y' ->
+                (
+                    add_influenza
+                );
+            Answer9 = 'n' -> assert(sore_throat(0))
         )
     ).
 
 influenza_specifics :- 
     (
-        current_predicate(sore_throat/1);
+        (current_predicate(sore_throat/1), sore_throat(_)) -> true;
         askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer8),
         (
             Answer8 = 'y' ->
                 (
                     add_bronchitis
                 );
-            Answer8 = 'n' -> true
+            Answer8 = 'n' -> assert(sore_throat(0))
         )
     ),
     (
-        current_predicate(runny_nose/1);
+        (current_predicate(runny_nose/1), runny_nose(_)) -> true;
         askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
         (
             Answer9 = 'y' ->
                 (
                     add_measles
                 );
-            Answer9 = 'n' -> true
+            Answer9 = 'n' -> assert(runny_nose(0))
         )
     ).
 
@@ -523,15 +516,29 @@ symptom_specifics :-
             (
                 % Specific for diarrhea
                 diarrhea_specifics,
-                (diarrhea_confirm -> write('you have diarrhea')); 
-                write('you DO NOT have diarrhea')
+                (
+                    diarrhea_confirm -> 
+                        write('you have diarrhea'), nl
+                ); 
+                (
+                    write('you DO NOT have diarrhea'), nl,
+                    assert(checked('Diarrhea')),
+                    symptom_specifics
+                )
             );
         Highest = 'Bronchitis' ->
             (
                 % Specific for bronchitis
                 bronchitis_specifics,
-                (bronchitis_confirm -> write('you have bronchitis'));
-                write('you DO NOT have bronchitis')
+                (
+                    bronchitis_confirm -> 
+                        write('you have bronchitis'), nl
+                );
+                (
+                    write('you DO NOT have bronchitis'), nl,
+                    assert(checked('Bronchitis')),
+                    symptom_specifics
+                )
             );
         Highest = 'Influenza' ->
             (
@@ -592,7 +599,6 @@ symptom_specifics :-
     ).
 
 :- dynamic checked/1.
-checked('Influenza').
 
 % Main Function
 :- initialization(main).
@@ -625,7 +631,7 @@ main :-
                 add_dengue,
                 add_tetanus
             );
-        Answer1 = 'n' -> true
+        Answer1 = 'n' -> assert(fever(0))
     ),
     askSymptom('Do you have a headache? (y/n) ', head_ache(1), Answer2),             % Similarity Count: 6
     (
@@ -638,7 +644,7 @@ main :-
                 add_malaria,
                 add_tetanus
             );
-        Answer2 = 'n' -> true
+        Answer2 = 'n' -> assert(head_ache(0))
     ),
     askSymptom('Are you experiencing coughing? (y/n) ', cough(1), Answer3),          % Similarity Count: 5
     (
@@ -650,7 +656,7 @@ main :-
                 add_measles,
                 add_schistosomiasis
             );
-        Answer3 = 'n' -> true
+        Answer3 = 'n' -> assert(cough(0))
     ),
     askSymptom('Have you vomited recently? (y/n) ', vomiting(1), Answer4),           % Similarity Count: 4
     (
@@ -661,7 +667,7 @@ main :-
                 add_malaria,
                 add_dengue
             );
-        Answer4 = 'n' -> true
+        Answer4 = 'n' -> assert(vomiting(0))
     ),
     askSymptom('Are you experiencing body aches? (y/n) ', body_ache(1), Answer5),    % Similarity Count: 4
     (
@@ -672,7 +678,7 @@ main :-
                 add_malaria,
                 add_schistosomiasis
             );
-        Answer5 = 'n' -> true
+        Answer5 = 'n' -> assert(body_ache(0))
     ),
     askSymptom('Are you experiencing fatigue? (y/n) ', fatigue(1), Answer6),         % Similarity Count: 4
     (
@@ -683,7 +689,7 @@ main :-
                 add_chicken_pox,
                 add_dengue
             );
-        Answer6 = 'n' -> true
+        Answer6 = 'n' -> assert(fatigue(0))
     ),
     askSymptom('Are you experiencing rashes? (y/n) ', rashes(1), Answer7),           % Similarity Count: 4
     (
@@ -694,7 +700,7 @@ main :-
                 add_schistosomiasis,
                 add_dengue
             );
-        Answer7 = 'n' -> true
+        Answer7 = 'n' -> assert(rashes(0))
     ),
 
     % Score the diseases
