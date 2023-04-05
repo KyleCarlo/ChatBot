@@ -826,5 +826,7 @@ main :-
             );
         Answer7 = 'n' -> assert(rashes(0))
     ),
-    % Score the diseases
+    
     symptom_specifics.
+
+    % changes ----
