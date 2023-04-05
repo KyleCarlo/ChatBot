@@ -335,12 +335,11 @@ bronchitis_specifics :-
         ),
         (
             current_predicate(runny_nose/1);
-            askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
+            askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer9),
             (
                 Answer9 = 'y' ->
                     (
-                        add_influenza,
-                        add_measles
+                        add_influenza
                     );
                 Answer9 = 'n' -> true
             )
@@ -455,16 +454,17 @@ main :-
     getScore(Highest),
     write(Highest), nl,
     (
-        Highest = 'Influenza' ->
-            (
-                % Specific for influenza
-                influenza_specifics
-            );
         Highest = 'Bronchitis' ->
             (
                 % Specific for bronchitis
                 bronchitis_specifics
             );
+        Highest = 'Influenza' ->
+            (
+                % Specific for influenza
+                influenza_specifics
+            );
+        
         Highest = _ -> true
     ).
 
