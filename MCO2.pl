@@ -399,7 +399,32 @@ main :-
 
     % Score the diseases
     getScore(Highest),
-    write(Highest).
+    (
+        Highest = 'Influenza' ->
+            (
+                % Specific for influenza
+                askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer8),
+                (
+                    Answer8 = 'y' ->
+                        (
+                            add_influenza,
+                            add_bronchitis
+                        );
+                    Answer8 = 'n' -> true
+                ),
+                askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
+                (
+                    Answer9 = 'y' ->
+                        (
+                            add_influenza,
+                            add_measles
+                        );
+                    Answer9 = 'n' -> true
+                )
+            );
+        Highest = _ -> true
+    ).
+
 
     % % Specific for diarrhea
     % askSymptom('Do you have stomach pain? (y/n) ', stomach_ache(1), Answer8),
