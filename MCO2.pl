@@ -152,16 +152,66 @@ index_of_Max([L|List], X, MaxIndex) :-
 
 /**
 *   Parameters:
-*       List - The list of values
-*       Index - The index of the value to be deleted
-*       Result - The list with the value at the index deleted
+*       [Head|Tail] - The list of values
+*       Index - The index of the value to be replaced
+*       NewElement - The new value to be inserted
+*       [Head|Rest] - The new list with the replaced value
 *   Description:
-*       This function deletes the value at given index
+*       This function replaces an element in a list at a given index
+*       This function is the recursive case
 */
-delete_at_index(List, Index, Result) :-
-    length(Prefix, Index),
-    append(Prefix, [_|Suffix], List),
-    append(Prefix, Suffix, Result).
+replace_list_element([Head|Tail], Index, NewElement, [Head|Rest]) :-
+    Index > 0, % continue recursively until the index is 0
+    NewIndex is Index - 1,
+    replace_list_element(Tail, NewIndex, NewElement, Rest).
+
+/**
+*   Parameters:
+*       [_|Tail] - The list of values
+*       0 - The index of the value to be replaced
+*       NewElement - The new value to be inserted
+*       [NewElement|Tail] - The new list with the replaced value
+*   Description:
+*       This function replaces an element in a list at a given index
+*       This function is the base case
+*/
+replace_list_element([_|Tail], 0, NewElement, [NewElement|Tail]) :- !. 
+
+/**
+*   Parameters:
+*       X - The element to be deleted
+*       [X|T] - The list to be processed
+*       NewT - The new list with the deleted element
+*   Description:
+*       This function deletes all occurences of an element in a list
+*       This function is the base case
+*/
+delete_all(_, [], []).
+
+/**
+*   Parameters:
+*       X - The element to be deleted
+*       [X|T] - The list to be processed
+*       NewT - The new list with the deleted element
+*   Description:
+*       This function deletes all occurences of an element in a list
+*       If X is the head of the list, skip and process the rest
+*/
+delete_all(X, [X|T], NewT) :- 
+    !,
+    delete_all(X, T, NewT).
+
+/**
+*   Parameters:
+*       X - The element to be deleted
+*       [H|T] - The list to be processed
+*       [H|NewT] - The new list with the deleted element
+*   Description:
+*       This function deletes all occurences of an element in a list
+*       If X is not the head of the list, process the rest
+*/
+delete_all(X, [H|T], [H|NewT]) :- 
+    delete_all(X, T, NewT).
 
 /**
 *   Parameters:
@@ -186,12 +236,11 @@ getScore(Highest) :-
                     'Tuberculosis', 'Chicken Pox', 'Measles', 
                     'Malaria', 'Schistosomiasis', 'Dengue'],
     (
-        
         (
             checked('Diarrhea') -> 
                 (
-                    delete_at_index(Diseases, 0, NewDiseases),
-                    delete_at_index(DisWords, 0, NewDisWords)
+                    replace_list_element(Diseases, 0, -1, NewDiseases),
+                    replace_list_element(DisWords, 0, -1, NewDisWords)
                 );
             (
                 NewDiseases = Diseases,
@@ -201,8 +250,8 @@ getScore(Highest) :-
         (
             checked('Bronchitis') -> 
                 (
-                    delete_at_index(NewDiseases, 1, NewDiseases1),
-                    delete_at_index(NewDisWords, 1, NewDisWords1)
+                    replace_list_element(NewDiseases, 1, -1, NewDiseases1),
+                    replace_list_element(NewDisWords, 1, -1, NewDisWords1)
                 );
             (
                 NewDiseases1 = NewDiseases,
@@ -210,10 +259,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Influenza') -> 
+            checked('Influenza') ->
                 (
-                    delete_at_index(NewDiseases1, 2, NewDiseases2),
-                    delete_at_index(NewDisWords1, 2, NewDisWords2)
+                    replace_list_element(NewDiseases1, 2, -1, NewDiseases2),
+                    replace_list_element(NewDisWords1, 2, -1, NewDisWords2)
                 );
             (
                 NewDiseases2 = NewDiseases1,
@@ -221,10 +270,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Tuberculosis') -> 
+            checked('Tuberculosis') ->
                 (
-                    delete_at_index(NewDiseases2, 3, NewDiseases3),
-                    delete_at_index(NewDisWords2, 3, NewDisWords3)
+                    replace_list_element(NewDiseases2, 3, -1, NewDiseases3),
+                    replace_list_element(NewDisWords2, 3, -1, NewDisWords3)
                 );
             (
                 NewDiseases3 = NewDiseases2,
@@ -232,10 +281,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Chicken Pox') -> 
+            checked('Chicken Pox') ->
                 (
-                    delete_at_index(NewDiseases3, 4, NewDiseases4),
-                    delete_at_index(NewDisWords3, 4, NewDisWords4)
+                    replace_list_element(NewDiseases3, 4, -1, NewDiseases4),
+                    replace_list_element(NewDisWords3, 4, -1, NewDisWords4)
                 );
             (
                 NewDiseases4 = NewDiseases3,
@@ -243,10 +292,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Measles') -> 
+            checked('Measles') ->
                 (
-                    delete_at_index(NewDiseases4, 5, NewDiseases5),
-                    delete_at_index(NewDisWords4, 5, NewDisWords5)
+                    replace_list_element(NewDiseases4, 5, -1, NewDiseases5),
+                    replace_list_element(NewDisWords4, 5, -1, NewDisWords5)
                 );
             (
                 NewDiseases5 = NewDiseases4,
@@ -254,10 +303,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Malaria') -> 
+            checked('Malaria') ->
                 (
-                    delete_at_index(NewDiseases5, 6, NewDiseases6),
-                    delete_at_index(NewDisWords5, 6, NewDisWords6)
+                    replace_list_element(NewDiseases5, 6, -1, NewDiseases6),
+                    replace_list_element(NewDisWords5, 6, -1, NewDisWords6)
                 );
             (
                 NewDiseases6 = NewDiseases5,
@@ -265,10 +314,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Schistosomiasis') -> 
+            checked('Schistosomiasis') ->
                 (
-                    delete_at_index(NewDiseases6, 7, NewDiseases7),
-                    delete_at_index(NewDisWords6, 7, NewDisWords7)
+                    replace_list_element(NewDiseases6, 7, -1, NewDiseases7),
+                    replace_list_element(NewDisWords6, 7, -1, NewDisWords7)
                 );
             (
                 NewDiseases7 = NewDiseases6,
@@ -276,10 +325,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Dengue') -> 
+            checked('Dengue') ->
                 (
-                    delete_at_index(NewDiseases7, 8, NewDiseases8),
-                    delete_at_index(NewDisWords7, 8, NewDisWords8)
+                    replace_list_element(NewDiseases7, 8, -1, NewDiseases8),
+                    replace_list_element(NewDisWords7, 8, -1, NewDisWords8)
                 );
             (
                 NewDiseases8 = NewDiseases7,
@@ -287,10 +336,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Tetanus') -> 
+            checked('Tetanus') ->
                 (
-                    delete_at_index(NewDiseases8, 9, NewDiseases9),
-                    delete_at_index(NewDisWords8, 9, NewDisWords9)
+                    replace_list_element(NewDiseases8, 9, -1, NewDiseases9),
+                    replace_list_element(NewDisWords8, 9, -1, NewDisWords9)
                 );
             (
                 NewDiseases9 = NewDiseases8,
@@ -300,9 +349,11 @@ getScore(Highest) :-
     ),
     write(NewDisWords9), nl,
     write(NewDiseases9), nl,
-    index_of_Max(NewDiseases9, 0, _),
+    delete_all(-1, NewDiseases9, ResultDiseases),
+    delete_all(-1, NewDisWords9, ResultDisWords),
+    index_of_Max(ResultDiseases, 0, _),
     max(Index),
-    nth0(Index, NewDisWords9, Highest).
+    nth0(Index, ResultDisWords, Highest).
 
 % Disease Scores
 % 1 - Diarrhea
@@ -775,6 +826,5 @@ main :-
             );
         Answer7 = 'n' -> assert(rashes(0))
     ),
-
     % Score the diseases
     symptom_specifics.
