@@ -299,6 +299,7 @@ getScore(Highest) :-
         )
     ),
     write(NewDisWords9), nl,
+    write(NewDiseases9), nl,
     index_of_Max(NewDiseases9, 0, _),
     max(Index),
     nth0(Index, NewDisWords9, Highest).
@@ -463,7 +464,6 @@ diarrhea_specifics :-
 
 bronchitis_specifics :- 
     (
-        
         (current_predicate(soreness_chest/1), soreness_chest(_)) -> true;
         askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', soreness_chest(1), Answer8),
         (
@@ -544,8 +544,18 @@ symptom_specifics :-
             (
                 % Specific for influenza
                 influenza_specifics,
-                (influenza_confirm -> write('you have influenza'));
-                write('you DO NOT have influenza')
+                (
+                    influenza_confirm -> write('you have influenza')
+                );
+                (
+                    write('you DO NOT have influenza'), nl,
+                    assert(checked('Influenza')),
+                    symptom_specifics
+                )
+            );
+        Highest = X ->
+            (
+                write('No disease found'), nl
             )
         % Highest = 'Tuberculosis' ->
         %     (
