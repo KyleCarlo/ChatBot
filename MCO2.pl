@@ -45,8 +45,6 @@ askSex :-
     ).
 
 /**
-*   Parameters:
-*       Name - The name of the patient
 *   Description:
 *       Introduces the chatbot and provides a brief description of its purpose
 */
@@ -309,7 +307,7 @@ influenza_specifics :-
         )
     ),
     (
-        runny_nose(1);
+        current_predicate(runny_nose/1);
         askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
         (
             Answer9 = 'y' ->
@@ -347,7 +345,7 @@ bronchitis_specifics :-
                 Answer9 = 'n' -> true
             )
         )
-    )
+    ).
 
 
 % Main Function
@@ -465,7 +463,7 @@ main :-
         Highest = 'Bronchitis' ->
             (
                 % Specific for bronchitis
-                
+                bronchitis_specifics
             );
         Highest = _ -> true
     ).
