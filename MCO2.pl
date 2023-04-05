@@ -496,6 +496,10 @@ tuberculosis_confirm :-
         head_ache(1)
     ).
 
+chicken_pox_confirm :-
+    headache(1),
+    fever(1),
+
 % Symptoms of Diseases
 diarrhea_specifics :-
     (
@@ -607,6 +611,16 @@ tuberculosis_specifics :-
             Answer14 = 'n' -> assert(soreness_chest(0))
         )
     ).
+
+
+chicken_pox_specifics :-
+    (
+        askSymptom('Have you been experiencing weakness? (y/n) ', weakness(1), Answer10),
+        (
+            Answer15 = 'y' -> true;
+            Answer15 = 'n' -> assert(weakness(0))
+        )
+    ),
 
 % Ask for the symptoms of the patient.
 symptom_specifics :-
