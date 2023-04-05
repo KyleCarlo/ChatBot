@@ -152,6 +152,19 @@ index_of_Max([L|List], X, MaxIndex) :-
 
 /**
 *   Parameters:
+*       List - The list of values
+*       Index - The index of the value to be deleted
+*       Result - The list with the value at the index deleted
+*   Description:
+*       This function deletes the value at given index
+*/
+delete_at_index(List, Index, Result) :-
+    length(Prefix, Index),
+    append(Prefix, [_|Suffix], List),
+    append(Prefix, Suffix, Result).
+
+/**
+*   Parameters:
 *       Highest - disease with the highest value
 *   Description:
 *       This function finds the disease with the highest value
@@ -172,9 +185,122 @@ getScore(Highest) :-
     [_|DisWords] = [_, 'Diarrhea', 'Bronchitis', 'Influenza', 
                     'Tuberculosis', 'Chicken Pox', 'Measles', 
                     'Malaria', 'Schistosomiasis', 'Dengue'],
-    index_of_Max(Diseases, 0, _),
+    (
+        
+        (
+            checked('Diarrhea') -> 
+                (
+                    delete_at_index(Diseases, 0, NewDiseases),
+                    delete_at_index(DisWords, 0, NewDisWords)
+                );
+            (
+                NewDiseases = Diseases,
+                NewDisWords = DisWords
+            )
+        ),
+        (
+            checked('Bronchitis') -> 
+                (
+                    delete_at_index(NewDiseases, 1, NewDiseases1),
+                    delete_at_index(NewDisWords, 1, NewDisWords1)
+                );
+            (
+                NewDiseases1 = NewDiseases,
+                NewDisWords1 = NewDisWords
+            )
+        ),
+        (
+            checked('Influenza') -> 
+                (
+                    delete_at_index(NewDiseases1, 2, NewDiseases2),
+                    delete_at_index(NewDisWords1, 2, NewDisWords2)
+                );
+            (
+                NewDiseases2 = NewDiseases1,
+                NewDisWords2 = NewDisWords1
+            )
+        ),
+        (
+            checked('Tuberculosis') -> 
+                (
+                    delete_at_index(NewDiseases2, 3, NewDiseases3),
+                    delete_at_index(NewDisWords2, 3, NewDisWords3)
+                );
+            (
+                NewDiseases3 = NewDiseases2,
+                NewDisWords3 = NewDisWords2
+            )
+        ),
+        (
+            checked('Chicken Pox') -> 
+                (
+                    delete_at_index(NewDiseases3, 4, NewDiseases4),
+                    delete_at_index(NewDisWords3, 4, NewDisWords4)
+                );
+            (
+                NewDiseases4 = NewDiseases3,
+                NewDisWords4 = NewDisWords3
+            )
+        ),
+        (
+            checked('Measles') -> 
+                (
+                    delete_at_index(NewDiseases4, 5, NewDiseases5),
+                    delete_at_index(NewDisWords4, 5, NewDisWords5)
+                );
+            (
+                NewDiseases5 = NewDiseases4,
+                NewDisWords5 = NewDisWords4
+            )
+        ),
+        (
+            checked('Malaria') -> 
+                (
+                    delete_at_index(NewDiseases5, 6, NewDiseases6),
+                    delete_at_index(NewDisWords5, 6, NewDisWords6)
+                );
+            (
+                NewDiseases6 = NewDiseases5,
+                NewDisWords6 = NewDisWords5
+            )
+        ),
+        (
+            checked('Schistosomiasis') -> 
+                (
+                    delete_at_index(NewDiseases6, 7, NewDiseases7),
+                    delete_at_index(NewDisWords6, 7, NewDisWords7)
+                );
+            (
+                NewDiseases7 = NewDiseases6,
+                NewDisWords7 = NewDisWords6
+            )
+        ),
+        (
+            checked('Dengue') -> 
+                (
+                    delete_at_index(NewDiseases7, 8, NewDiseases8),
+                    delete_at_index(NewDisWords7, 8, NewDisWords8)
+                );
+            (
+                NewDiseases8 = NewDiseases7,
+                NewDisWords8 = NewDisWords7
+            )
+        ),
+        (
+            checked('Tetanus') -> 
+                (
+                    delete_at_index(NewDiseases8, 9, NewDiseases9),
+                    delete_at_index(NewDisWords8, 9, NewDisWords9)
+                );
+            (
+                NewDiseases9 = NewDiseases8,
+                NewDisWords9 = NewDisWords8
+            )
+        )
+    ),
+    index_of_Max(NewDiseases9, 0, _),
     max(Index),
-    nth0(Index, DisWords, Highest).
+    nth0(Index, NewDisWords9, Highest).
 
 % Disease Scores
 % 1 - Diarrhea
@@ -464,7 +590,8 @@ symptom_specifics :-
         %     );
     ).
 
-checked(0).
+:- dynamic checked/1.
+checked('Influenza').
 
 % Main Function
 :- initialization(main).
