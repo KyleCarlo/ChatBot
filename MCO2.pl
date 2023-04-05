@@ -433,6 +433,18 @@ influenza_confirm :-
         watery_stool(1)
     ).
 
+tuberculosis_confirm :-
+    cough(1),
+    coughing_blood(1),
+    night_sweats(1),
+    (
+        fever(1);
+        weight_loss(1);
+        fatigue(1);
+        body_ache(1);
+        head_ache(1)
+    ).
+
 % Symptoms of Diseases
 diarrhea_specifics :-
     (
@@ -452,7 +464,7 @@ diarrhea_specifics :-
     ),
     (
         (current_predicate(frequent_poop/1), frequent_poop(_)) -> true;
-        askSymptom('Do you have frequent pooping? (y/n) ', frequent_poop(1), Answer9),
+        askSymptom('Do you experience bowel movements more frequently than usual? (y/n) ', frequent_poop(1), Answer9),
         (
             Answer9 = 'y' -> 
                 (
@@ -507,6 +519,44 @@ influenza_specifics :-
         )
     ).
 
+tuberculosis_specifics :- 
+    (
+        askSymptom('Have you been experiencing weakness? (y/n) ', weakness(1), Answer10),
+        (
+            Answer10 = 'y' -> true;
+            Answer10 = 'n' -> assert(weakness(0))
+        )
+    ),
+    (
+        askSymptom('Have you experienced any unexplained weight loss?', weight_loss(1), Answer11),
+        (
+            Answer11 = 'y' -> true;
+            Answer11 = 'n' -> assert(weight_loss(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing night sweats?', night_sweats(1), Answer12),
+        (
+            Answer12 = 'y' -> true;
+            Answer12 = 'n' -> assert(night_sweats(0))
+        )
+    ),
+    (
+        askSymptom('Have you coughed up any blood?', coughing_blood(1), Answer13),
+        (
+            Answer13 = 'y' -> true;
+            Answer13 = 'n' -> assert(coughing_blood(0))
+        )
+    ),
+    (
+        (current_predicate(soreness_chest/1), soreness_chest(_)) -> true;
+        askSymptom('Have you been experienced chest pain', soreness_chest(1), Answer14),
+        (
+            Answer14 = 'y' -> true;
+            Answer14 = 'n' -> assert(soreness_chest(0))
+        )
+    ).
+
 % Ask for the symptoms of the patient.
 symptom_specifics :-
     getScore(Highest),
@@ -553,7 +603,20 @@ symptom_specifics :-
                     symptom_specifics
                 )
             );
-        Highest = X ->
+        Highest = 'Tuberculosis' ->
+            (
+                % Specific for tuberculosis
+                tuberculosis_specifics,
+                (
+                    tuberculosis_confirm -> write('you have tuberculosis')
+                );
+                (
+                    write('you DO NOT have tuberculosis'), nl,
+                    assert(checked('Tuberculosis')),
+                    symptom_specifics
+                )
+            );
+        Highest = _ ->
             (
                 write('No disease found'), nl
             )
