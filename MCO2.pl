@@ -397,7 +397,7 @@ symptom_specifics :-
                 % Specific for diarrhea
                 diarrhea_specifics,
                 (diarrhea_confirm -> write('you have diarrhea')); 
-                (write('you DO NOT have diarrhea'), symptom_specifics)
+                write('you DO NOT have diarrhea')
             );
         Highest = 'Bronchitis' ->
             (
