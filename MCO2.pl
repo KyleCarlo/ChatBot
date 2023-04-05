@@ -499,6 +499,57 @@ tuberculosis_confirm :-
 chicken_pox_confirm :-
     headache(1),
     fever(1),
+    fatigue(1),
+    rashes(1),
+    loss_of_appetite(1).
+
+measles_confirm :-
+    fever(1),
+    cough(1),
+    runny_nose(1),
+    rashes(1),
+    koplik_spots(1),
+    red_watery_eyes(1).
+    
+malaria_confirm :-
+    vomiting(1),
+    headache(1),
+    fever(1),
+    body_ache(1),
+    shivering(1),
+    sweats(1),
+    mild_jaundice(1),
+    increased_respiratory_rate(1),
+    general_malaise(1).
+
+schistosomiasiss_confirm :-
+    fever(1),
+    body_ache(1),
+    cough(1),
+    rashes(1),
+    chills(1).
+
+dengue_confirm :-
+    vomiting(1),
+    fever(1),
+    fatigue(1),
+    rashes(1),
+    increased_respiratory_rate(1),
+    general_malaise(1),
+    bleeding_from_gums_or_nose(1),
+    blood_in_urine(1),
+    bruises(1),
+    eye_pain(1).
+
+tetanus_confirm :-
+    headache(1),
+    fever(1),
+    sweats(1),
+    lock_jaw(1),
+    muscle_spasm(1),
+    trouble_swallowing(1),
+    seizures(1),
+    changes_in_blood_pressure(1).
 
 % Symptoms of Diseases
 diarrhea_specifics :-
@@ -615,13 +666,163 @@ tuberculosis_specifics :-
 
 chicken_pox_specifics :-
     (
-        askSymptom('Have you been experiencing weakness? (y/n) ', weakness(1), Answer10),
+        askSymptom('Have you been experiencing loss of appetite? (y/n) ', loss_of_appetite(1), Answer15),
         (
             Answer15 = 'y' -> true;
-            Answer15 = 'n' -> assert(weakness(0))
+            Answer15 = 'n' -> assert(loss_of_appetite(0))
+        )
+    ).
+
+measles_specifics :-
+    (
+        askSymptom('Have you been experiencing runny nose? (y/n) ', runny_nose(1), Answer16),
+        (
+            Answer16 = 'y' -> true;
+            Answer16 = 'n' -> assert(runny_nose(0))
         )
     ),
+    (
+        askSymptom('Have you been experiencing koplik spots? (y/n) ', koplik_spots(1), Answer17),
+        (
+            Answer17 = 'y' -> true;
+            Answer17 = 'n' -> assert(koplik_spots(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing red watery eyes? (y/n) ', red_watery_eyes(1), Answer18),
+        (
+            Answer18 = 'y' -> true;
+            Answer18 = 'n' -> assert(red_watery_eyes(0))
+        )
+    ).
 
+malaria_specifics :-
+    (
+        askSymptom('Have you been experiencing shivering? (y/n)', shivering(1), Answer19),
+        (
+            Answer19 = 'y' -> true;
+            Answer19 = 'n' -> assert(shivering(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing sweating? (y/n)', sweating(1), Answer20),
+        (
+            Answer20 = 'y' -> true;
+            Answer20 = 'n' -> assert(sweating(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing mild jaundice? (y/n)', mild_jaundice(1), Answer21),
+        (
+            Answer21 = 'y' -> true;
+            Answer21 = 'n' -> assert(mild_jaundice(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing increased respiratory rate? (y/n)', increased_respiratory_rate(1), Answer22),
+        (
+            Answer22 = 'y' -> true;
+            Answer22 = 'n' -> assert(increased_respiratory_rate(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing general malaise? (y/n)', general_malaise(1), Answer23),
+        (
+            Answer23 = 'y' -> true;
+            Answer23 = 'n' -> assert(general_malaise(0))
+        )
+    ).
+
+schistosomiasis_specifics :-
+    (
+        askSymptom('Have you been experiencing chills? (y/n) ', chills(1), Answer24),
+        (
+            Answer24 = 'y' -> true;
+            Answer24 = 'n' -> assert(chills(0))
+        )
+    ).
+
+dengue_specifics :-
+    (
+        askSymptom('Have you been experiencing increased respiratory rate? (y/n) ', increased_respiratory_rate(1), Answer25),
+        (
+            Answer25 = 'y' -> true;
+            Answer25 = 'n' -> assert(increased_respiratory_rate(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing general malaise? (y/n) ', general_malaise(1), Answer26),
+        (
+            Answer26 = 'y' -> true;
+            Answer26 = 'n' -> assert(general_malaise(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing bleeding from gums or nose? (y/n) ', bleeding_from_gums_or_nose(1), Answer27),
+        (
+            Answer27 = 'y' -> true;
+            Answer27 = 'n' -> assert(bleeding_from_gums_or_nose(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing blood in urine? (y/n) ', blood_in_urine(1), Answer28),
+        (
+            Answer28 = 'y' -> true;
+            Answer28 = 'n' -> assert(blood_in_urine(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing bruises? (y/n) ', bruises(1), Answer29),
+        (
+            Answer29 = 'y' -> true;
+            Answer29 = 'n' -> assert(bruises(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing eye pain? (y/n) ', eye_pain(1), Answer30),
+        (
+            Answer30 = 'y' -> true;
+            Answer30 = 'n' -> assert(eye_pain(0))
+        )
+    ).
+
+tetanus_specifics :-
+    (
+        askSymptom('Have you been experiencing sweating? (y/n)', sweating(1), Answer31),
+        (
+            Answer31 = 'y' -> true;
+            Answer31 = 'n' -> assert(sweating(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing muscle spasm? (y/n)', muscle_spasm(1), Answer32),
+        (
+            Answer32 = 'y' -> true;
+            Answer32 = 'n' -> assert(muscle_spasm(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing trouble in swallowing? (y/n)', trouble_swallowing(1), Answer33),
+        (
+            Answer33 = 'y' -> true;
+            Answer33 = 'n' -> assert(trouble_swallowing(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing seizures? (y/n)', seizures(1), Answer34),
+        (
+            Answer34 = 'y' -> true;
+            Answer34 = 'n' -> assert(seizures(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing changes in blood pressure? (y/n)', changes_in_blood_pressure(1), Answer35),
+        (
+            Answer35 = 'y' -> true;
+            Answer35 = 'n' -> assert(changes_in_blood_pressure(0))
+        )
+    ).
+    
 % Ask for the symptoms of the patient.
 symptom_specifics :-
     getScore(Highest),
@@ -678,6 +879,84 @@ symptom_specifics :-
                 (
                     write('you DO NOT have tuberculosis'), nl,
                     assert(checked('Tuberculosis')),
+                    symptom_specifics
+                )
+            );
+        Highest = 'Chicken Pox' ->
+            (
+                % Specific for Chicken Pox
+                chicken_pox_specifics,
+                (
+                    chicken_pox_confirm -> write('you have chicken pox')
+                );
+                (
+                    write('you DO NOT have chicken pox'), nl,
+                    assert(checked('Chicken Pox')),
+                    symptom_specifics
+                )
+            );
+        Highest = 'Measles' ->
+            (
+                % Specific for measles
+                measles_specifics,
+                (
+                    measles_confirm -> write('you have measles')
+                );
+                (
+                    write('you DO NOT have measles'), nl,
+                    assert(checked('Measles')),
+                    symptom_specifics
+                )
+            );
+        Highest = 'Malaria' ->
+            (
+                % Specific for Malaria
+                malaria_specifics,
+                (
+                    malaria_confirm -> write('you have malaria')
+                );
+                (
+                    write('you DO NOT have malaria'), nl,
+                    assert(checked('Malaria')),
+                    symptom_specifics
+                )
+            );
+        Highest = 'Schistosomiasis' ->
+            (
+                % Specific for schistosomiasis
+                schistosomiasis_specifics,
+                (
+                    schistosomiasis_confirm -> write('you have schistosomiasis')
+                );
+                (
+                    write('you DO NOT have schistosomiasis'), nl,
+                    assert(checked('Schistosomiasis')),
+                    symptom_specifics
+                )
+            );
+        Highest = 'Dengue' ->
+            (
+                % Specific for Dengue
+                dengue_specifics,
+                (
+                    dengue_confirm -> write('you have dengue')
+                );
+                (
+                    write('you DO NOT have dengue'), nl,
+                    assert(checked('Dengue')),
+                    symptom_specifics
+                )
+            );
+        Highest = 'Tetanus' ->
+            (
+                % Specific for tetanus
+                tetanus_specifics,
+                (
+                    tetanus_confirm -> write('you have tetanus')
+                );
+                (
+                    write('you DO NOT have tetanus'), nl,
+                    assert(checked('Tetanus')),
                     symptom_specifics
                 )
             );
