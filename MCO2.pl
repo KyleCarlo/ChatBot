@@ -274,45 +274,62 @@ add_tetanus :-
 
 % Initialize Diseases
 diarrhea_confirm :- 
-    watery_stool(1),
-    frequent_poop(1);
+    current_predicate(watery_stool/1),
+    current_predicate(frequent_poop/1),
     (
-        vomiting(1);
-        fever(1);
-        body_ache(1);
-        head_ache(1);
-        stomach_ache(1)
+        current_predicate(vomiting/1);
+        current_predicate(fever/1);
+        current_predicate(body_ache/1);
+        current_predicate(head_ache/1);
+        current_predicate(stomach_ache/1)
     ).
 
 bronchitis_confirm :-
-    soreness_chest(1),
-    cough(1),
-    sore_throat(1);
+    current_predicate(soreness_chest/1),
+    current_predicate(cough/1),
     (
-        body_ache(1);
-        head_ache(1)
+        current_predicate(sore_throat/1);
+        current_predicate(body_ache/1);
+        current_predicate(head_ache/1)
+    ).
+
+influenza_confirm :-
+    current_predicate(fever/1),
+    current_predicate(cough/1),
+    current_predicate(head_ache/1),
+    current_predicate(fatigue/1),
+    (
+        current_predicate(cough/1);
+        current_predicate(runny_nose/1);
+        current_predicate(sore_throat/1);
+        current_predicate(vomiting/1);
+        current_predicate(watery_stool/1)
     ).
 
 % Symptoms of Diseases
-influenza_specifics :- 
+diarrhea_specifics :-
     (
-        current_predicate(sore_throat/1);
-        askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer8),
+        current_predicate(stomach_ache/1);
+        askSymptom('Do you have stomach ache? (y/n) ', stomach_ache(1), _)
+    ),
+    (
+        current_predicate(watery_stool/1);
+        askSymptom('Do you have watery stool? (y/n) ', watery_stool(1), Answer8),
         (
-            Answer8 = 'y' ->
+            Answer8 = 'y' -> 
                 (
-                    add_bronchitis
+                    add_influenza
                 );
             Answer8 = 'n' -> true
         )
     ),
     (
-        current_predicate(runny_nose/1);
-        askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
+        current_predicate(frequent_poop/1);
+        askSymptom('Do you have frequent pooping? (y/n) ', frequent_poop(1), Answer9),
         (
-            Answer9 = 'y' ->
+            Answer9 = 'y' -> 
                 (
-                    add_measles
+                    add_tuberculosis
                 );
             Answer9 = 'n' -> true
         )
@@ -346,6 +363,108 @@ bronchitis_specifics :-
         )
     ).
 
+influenza_specifics :- 
+    (
+        current_predicate(sore_throat/1);
+        askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer8),
+        (
+            Answer8 = 'y' ->
+                (
+                    add_bronchitis
+                );
+            Answer8 = 'n' -> true
+        )
+    ),
+    (
+        current_predicate(runny_nose/1);
+        askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
+        (
+            Answer9 = 'y' ->
+                (
+                    add_measles
+                );
+            Answer9 = 'n' -> true
+        )
+    ).
+
+% Ask for the symptoms of the patient.
+symptom_specifics :-
+    getScore(Highest),
+    write(Highest), nl,
+    (
+        Highest = 'Diarrhea' -> 
+            (
+                % Specific for diarrhea
+                diarrhea_specifics,
+                (diarrhea_confirm -> write('you have diarrhea')); 
+                (write('you DO NOT have diarrhea'), symptom_specifics)
+            );
+        Highest = 'Bronchitis' ->
+            (
+                % Specific for bronchitis
+                bronchitis_specifics,
+                (bronchitis_confirm -> write('you have bronchitis'));
+                write('you DO NOT have bronchitis')
+            );
+        Highest = 'Influenza' ->
+            (
+                % Specific for influenza
+                influenza_specifics,
+                (influenza_confirm -> write('you have influenza'));
+                write('you DO NOT have influenza')
+            )
+        % Highest = 'Tuberculosis' ->
+        %     (
+        %         % Specific for tuberculosis
+        %         tuberculosis_specifics,
+        %         (tuberculosis_confirm -> write('you have tuberculosis'));
+        %         write('you DO NOT have tuberculosis')
+        %     );
+        % Highest = 'Chicken Pox' ->
+        %     (
+        %         % Specific for chicken pox
+        %         chicken_pox_specifics,
+        %         (chicken_pox_confirm -> write('you have chicken pox'));
+        %         write('you DO NOT have chicken pox')
+        %     );
+        % Highest = 'Measles' ->
+        %     (
+        %         % Specific for measles
+        %         measles_specifics,
+        %         (measles_confirm -> write('you have measles'));
+        %         write('you DO NOT have measles')
+        %     );
+        % Highest = 'Malaria' ->
+        %     (
+        %         % Specific for malaria
+        %         malaria_specifics,
+        %         (malaria_confirm -> write('you have malaria'));
+        %         write('you DO NOT have malaria')
+        %     );
+        % Highest = 'Schistosomiasis' ->
+        %     (
+        %         % Specific for schistosomiasis
+        %         schistosomiasis_specifics,
+        %         (schistosomiasis_confirm -> write('you have schistosomiasis'));
+        %         write('you DO NOT have schistosomiasis')
+        %     );
+        % Highest = 'Dengue' ->
+        %     (
+        %         % Specific for dengue
+        %         dengue_specifics,
+        %         (dengue_confirm -> write('you have dengue'));
+        %         write('you DO NOT have dengue')
+        %     );
+        % Highest = 'Tetanus' ->
+        %     (
+        %         % Specific for tetanus
+        %         tetanus_specifics,
+        %         (tetanus_confirm -> write('you have tetanus'));
+        %         write('you DO NOT have tetanus')
+        %     );
+    ).
+
+checked(0).
 
 % Main Function
 :- initialization(main).
@@ -451,28 +570,4 @@ main :-
     ),
 
     % Score the diseases
-    getScore(Highest),
-    write(Highest), nl,
-    (
-        Highest = 'Bronchitis' ->
-            (
-                % Specific for bronchitis
-                bronchitis_specifics
-            );
-        Highest = 'Influenza' ->
-            (
-                % Specific for influenza
-                influenza_specifics
-            );
-        
-        Highest = _ -> true
-    ).
-
-
-    % % Specific for diarrhea
-    % askSymptom('Do you have stomach pain? (y/n) ', stomach_ache(1), Answer8),
-    % askSymptom('Are you experiencing watery stool? (y/n) ', watery_stool(1), Answer9),
-    % askSymptom('Are you experiencing frequent pooping? (y/n) ', frequent_poop(1), Answer10);
-
-    % (diarrhea_confirm ->
-    %     write('you have diarrhea')).
+    symptom_specifics.
