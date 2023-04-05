@@ -152,16 +152,66 @@ index_of_Max([L|List], X, MaxIndex) :-
 
 /**
 *   Parameters:
-*       List - The list of values
-*       Index - The index of the value to be deleted
-*       Result - The list with the value at the index deleted
+*       [Head|Tail] - The list of values
+*       Index - The index of the value to be replaced
+*       NewElement - The new value to be inserted
+*       [Head|Rest] - The new list with the replaced value
 *   Description:
-*       This function deletes the value at given index
+*       This function replaces an element in a list at a given index
+*       This function is the recursive case
 */
-delete_at_index(List, Index, Result) :-
-    length(Prefix, Index),
-    append(Prefix, [_|Suffix], List),
-    append(Prefix, Suffix, Result).
+replace_list_element([Head|Tail], Index, NewElement, [Head|Rest]) :-
+    Index > 0, % continue recursively until the index is 0
+    NewIndex is Index - 1,
+    replace_list_element(Tail, NewIndex, NewElement, Rest).
+
+/**
+*   Parameters:
+*       [_|Tail] - The list of values
+*       0 - The index of the value to be replaced
+*       NewElement - The new value to be inserted
+*       [NewElement|Tail] - The new list with the replaced value
+*   Description:
+*       This function replaces an element in a list at a given index
+*       This function is the base case
+*/
+replace_list_element([_|Tail], 0, NewElement, [NewElement|Tail]) :- !. 
+
+/**
+*   Parameters:
+*       X - The element to be deleted
+*       [X|T] - The list to be processed
+*       NewT - The new list with the deleted element
+*   Description:
+*       This function deletes all occurences of an element in a list
+*       This function is the base case
+*/
+delete_all(_, [], []).
+
+/**
+*   Parameters:
+*       X - The element to be deleted
+*       [X|T] - The list to be processed
+*       NewT - The new list with the deleted element
+*   Description:
+*       This function deletes all occurences of an element in a list
+*       If X is the head of the list, skip and process the rest
+*/
+delete_all(X, [X|T], NewT) :- 
+    !,
+    delete_all(X, T, NewT).
+
+/**
+*   Parameters:
+*       X - The element to be deleted
+*       [H|T] - The list to be processed
+*       [H|NewT] - The new list with the deleted element
+*   Description:
+*       This function deletes all occurences of an element in a list
+*       If X is not the head of the list, process the rest
+*/
+delete_all(X, [H|T], [H|NewT]) :- 
+    delete_all(X, T, NewT).
 
 /**
 *   Parameters:
@@ -186,12 +236,11 @@ getScore(Highest) :-
                     'Tuberculosis', 'Chicken Pox', 'Measles', 
                     'Malaria', 'Schistosomiasis', 'Dengue'],
     (
-        
         (
             checked('Diarrhea') -> 
                 (
-                    delete_at_index(Diseases, 0, NewDiseases),
-                    delete_at_index(DisWords, 0, NewDisWords)
+                    replace_list_element(Diseases, 0, -1, NewDiseases),
+                    replace_list_element(DisWords, 0, -1, NewDisWords)
                 );
             (
                 NewDiseases = Diseases,
@@ -201,8 +250,8 @@ getScore(Highest) :-
         (
             checked('Bronchitis') -> 
                 (
-                    delete_at_index(NewDiseases, 1, NewDiseases1),
-                    delete_at_index(NewDisWords, 1, NewDisWords1)
+                    replace_list_element(NewDiseases, 1, -1, NewDiseases1),
+                    replace_list_element(NewDisWords, 1, -1, NewDisWords1)
                 );
             (
                 NewDiseases1 = NewDiseases,
@@ -210,10 +259,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Influenza') -> 
+            checked('Influenza') ->
                 (
-                    delete_at_index(NewDiseases1, 2, NewDiseases2),
-                    delete_at_index(NewDisWords1, 2, NewDisWords2)
+                    replace_list_element(NewDiseases1, 2, -1, NewDiseases2),
+                    replace_list_element(NewDisWords1, 2, -1, NewDisWords2)
                 );
             (
                 NewDiseases2 = NewDiseases1,
@@ -221,10 +270,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Tuberculosis') -> 
+            checked('Tuberculosis') ->
                 (
-                    delete_at_index(NewDiseases2, 3, NewDiseases3),
-                    delete_at_index(NewDisWords2, 3, NewDisWords3)
+                    replace_list_element(NewDiseases2, 3, -1, NewDiseases3),
+                    replace_list_element(NewDisWords2, 3, -1, NewDisWords3)
                 );
             (
                 NewDiseases3 = NewDiseases2,
@@ -232,10 +281,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Chicken Pox') -> 
+            checked('Chicken Pox') ->
                 (
-                    delete_at_index(NewDiseases3, 4, NewDiseases4),
-                    delete_at_index(NewDisWords3, 4, NewDisWords4)
+                    replace_list_element(NewDiseases3, 4, -1, NewDiseases4),
+                    replace_list_element(NewDisWords3, 4, -1, NewDisWords4)
                 );
             (
                 NewDiseases4 = NewDiseases3,
@@ -243,10 +292,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Measles') -> 
+            checked('Measles') ->
                 (
-                    delete_at_index(NewDiseases4, 5, NewDiseases5),
-                    delete_at_index(NewDisWords4, 5, NewDisWords5)
+                    replace_list_element(NewDiseases4, 5, -1, NewDiseases5),
+                    replace_list_element(NewDisWords4, 5, -1, NewDisWords5)
                 );
             (
                 NewDiseases5 = NewDiseases4,
@@ -254,10 +303,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Malaria') -> 
+            checked('Malaria') ->
                 (
-                    delete_at_index(NewDiseases5, 6, NewDiseases6),
-                    delete_at_index(NewDisWords5, 6, NewDisWords6)
+                    replace_list_element(NewDiseases5, 6, -1, NewDiseases6),
+                    replace_list_element(NewDisWords5, 6, -1, NewDisWords6)
                 );
             (
                 NewDiseases6 = NewDiseases5,
@@ -265,10 +314,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Schistosomiasis') -> 
+            checked('Schistosomiasis') ->
                 (
-                    delete_at_index(NewDiseases6, 7, NewDiseases7),
-                    delete_at_index(NewDisWords6, 7, NewDisWords7)
+                    replace_list_element(NewDiseases6, 7, -1, NewDiseases7),
+                    replace_list_element(NewDisWords6, 7, -1, NewDisWords7)
                 );
             (
                 NewDiseases7 = NewDiseases6,
@@ -276,10 +325,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Dengue') -> 
+            checked('Dengue') ->
                 (
-                    delete_at_index(NewDiseases7, 8, NewDiseases8),
-                    delete_at_index(NewDisWords7, 8, NewDisWords8)
+                    replace_list_element(NewDiseases7, 8, -1, NewDiseases8),
+                    replace_list_element(NewDisWords7, 8, -1, NewDisWords8)
                 );
             (
                 NewDiseases8 = NewDiseases7,
@@ -287,10 +336,10 @@ getScore(Highest) :-
             )
         ),
         (
-            checked('Tetanus') -> 
+            checked('Tetanus') ->
                 (
-                    delete_at_index(NewDiseases8, 9, NewDiseases9),
-                    delete_at_index(NewDisWords8, 9, NewDisWords9)
+                    replace_list_element(NewDiseases8, 9, -1, NewDiseases9),
+                    replace_list_element(NewDisWords8, 9, -1, NewDisWords9)
                 );
             (
                 NewDiseases9 = NewDiseases8,
@@ -299,9 +348,12 @@ getScore(Highest) :-
         )
     ),
     write(NewDisWords9), nl,
-    index_of_Max(NewDiseases9, 0, _),
+    write(NewDiseases9), nl,
+    delete_all(-1, NewDiseases9, ResultDiseases),
+    delete_all(-1, NewDisWords9, ResultDisWords),
+    index_of_Max(ResultDiseases, 0, _),
     max(Index),
-    nth0(Index, NewDisWords9, Highest).
+    nth0(Index, ResultDisWords, Highest).
 
 % Disease Scores
 % 1 - Diarrhea
@@ -401,116 +453,158 @@ add_tetanus :-
 
 % Initialize Diseases
 diarrhea_confirm :- 
-    current_predicate(watery_stool/1),
-    current_predicate(frequent_poop/1),
+    watery_stool(1),
+    frequent_poop(1),
     (
-        current_predicate(vomiting/1);
-        current_predicate(fever/1);
-        current_predicate(body_ache/1);
-        current_predicate(head_ache/1);
-        current_predicate(stomach_ache/1)
+        vomiting(1);
+        fever(1);
+        body_ache(1);
+        head_ache(1);
+        stomach_ache(1)
     ).
 
 bronchitis_confirm :-
-    current_predicate(soreness_chest/1),
-    current_predicate(cough/1),
+    soreness_chest(1),
+    cough(1),
     (
-        current_predicate(sore_throat/1);
-        current_predicate(body_ache/1);
-        current_predicate(head_ache/1)
+        sore_throat(1);
+        body_ache(1);
+        head_ache(1)
     ).
 
 influenza_confirm :-
-    current_predicate(fever/1),
-    current_predicate(cough/1),
-    current_predicate(head_ache/1),
-    current_predicate(fatigue/1),
+    fever(1),
+    head_ache(1),
+    fatigue(1),
     (
-        current_predicate(cough/1);
-        current_predicate(runny_nose/1);
-        current_predicate(sore_throat/1);
-        current_predicate(vomiting/1);
-        current_predicate(watery_stool/1)
+        cough(1);
+        runny_nose(1);
+        sore_throat(1);
+        vomiting(1);
+        watery_stool(1)
+    ).
+
+tuberculosis_confirm :-
+    cough(1),
+    coughing_blood(1),
+    night_sweats(1),
+    (
+        fever(1);
+        weight_loss(1);
+        fatigue(1);
+        body_ache(1);
+        head_ache(1)
     ).
 
 % Symptoms of Diseases
 diarrhea_specifics :-
     (
-        current_predicate(stomach_ache/1);
+        (current_predicate(stomach_ache/1), stomach_ache(_)) -> true;
         askSymptom('Do you have stomach ache? (y/n) ', stomach_ache(1), _)
     ),
     (
-        current_predicate(watery_stool/1);
+        (current_predicate(watery_stool/1), watery_stool(_)) -> true;
         askSymptom('Do you have watery stool? (y/n) ', watery_stool(1), Answer8),
         (
             Answer8 = 'y' -> 
                 (
                     add_influenza
                 );
-            Answer8 = 'n' -> true
+            Answer8 = 'n' -> assert(watery_stool(0))
         )
     ),
     (
-        current_predicate(frequent_poop/1);
-        askSymptom('Do you have frequent pooping? (y/n) ', frequent_poop(1), Answer9),
+        (current_predicate(frequent_poop/1), frequent_poop(_)) -> true;
+        askSymptom('Do you experience bowel movements more frequently than usual? (y/n) ', frequent_poop(1), Answer9),
         (
             Answer9 = 'y' -> 
                 (
                     add_tuberculosis
                 );
-            Answer9 = 'n' -> true
+            Answer9 = 'n' -> assert(frequent_poop(0))
         )
     ).
 
 bronchitis_specifics :- 
     (
+        (current_predicate(soreness_chest/1), soreness_chest(_)) -> true;
+        askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', soreness_chest(1), Answer8),
         (
-            current_predicate(soreness_chest/1);
-            askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', 
-                        soreness_chest(1), Answer8),
-            (
-                Answer8 = 'y' ->
-                    (
-                        add_influenza,
-                        add_bronchitis
-                    );
-                Answer8 = 'n' -> true
-            )
-        ),
+            Answer8 = 'y' -> true;
+            Answer8 = 'n' -> assert(soreness_chest(0))
+        )
+    ),
+    (
+        (current_predicate(sore_throat/1), sore_throat(_)) -> true;
+        askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer9),
         (
-            current_predicate(runny_nose/1);
-            askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer9),
-            (
-                Answer9 = 'y' ->
-                    (
-                        add_influenza
-                    );
-                Answer9 = 'n' -> true
-            )
+            Answer9 = 'y' ->
+                (
+                    add_influenza
+                );
+            Answer9 = 'n' -> assert(sore_throat(0))
         )
     ).
 
 influenza_specifics :- 
     (
-        current_predicate(sore_throat/1);
+        (current_predicate(sore_throat/1), sore_throat(_)) -> true;
         askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer8),
         (
             Answer8 = 'y' ->
                 (
                     add_bronchitis
                 );
-            Answer8 = 'n' -> true
+            Answer8 = 'n' -> assert(sore_throat(0))
         )
     ),
     (
-        current_predicate(runny_nose/1);
+        (current_predicate(runny_nose/1), runny_nose(_)) -> true;
         askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
         (
             Answer9 = 'y' ->
                 (
                     add_measles
                 );
-            Answer9 = 'n' -> true
+            Answer9 = 'n' -> assert(runny_nose(0))
+        )
+    ).
+
+tuberculosis_specifics :- 
+    (
+        askSymptom('Have you been experiencing weakness? (y/n) ', weakness(1), Answer10),
+        (
+            Answer10 = 'y' -> true;
+            Answer10 = 'n' -> assert(weakness(0))
+        )
+    ),
+    (
+        askSymptom('Have you experienced any unexplained weight loss?', weight_loss(1), Answer11),
+        (
+            Answer11 = 'y' -> true;
+            Answer11 = 'n' -> assert(weight_loss(0))
+        )
+    ),
+    (
+        askSymptom('Have you been experiencing night sweats?', night_sweats(1), Answer12),
+        (
+            Answer12 = 'y' -> true;
+            Answer12 = 'n' -> assert(night_sweats(0))
+        )
+    ),
+    (
+        askSymptom('Have you coughed up any blood?', coughing_blood(1), Answer13),
+        (
+            Answer13 = 'y' -> true;
+            Answer13 = 'n' -> assert(coughing_blood(0))
+        )
+    ),
+    (
+        (current_predicate(soreness_chest/1), soreness_chest(_)) -> true;
+        askSymptom('Have you been experienced chest pain', soreness_chest(1), Answer14),
+        (
+            Answer14 = 'y' -> true;
+            Answer14 = 'n' -> assert(soreness_chest(0))
         )
     ).
 
@@ -523,22 +617,59 @@ symptom_specifics :-
             (
                 % Specific for diarrhea
                 diarrhea_specifics,
-                (diarrhea_confirm -> write('you have diarrhea')); 
-                write('you DO NOT have diarrhea')
+                (
+                    diarrhea_confirm -> 
+                        write('you have diarrhea'), nl
+                ); 
+                (
+                    write('you DO NOT have diarrhea'), nl,
+                    assert(checked('Diarrhea')),
+                    symptom_specifics
+                )
             );
         Highest = 'Bronchitis' ->
             (
                 % Specific for bronchitis
                 bronchitis_specifics,
-                (bronchitis_confirm -> write('you have bronchitis'));
-                write('you DO NOT have bronchitis')
+                (
+                    bronchitis_confirm -> 
+                        write('you have bronchitis'), nl
+                );
+                (
+                    write('you DO NOT have bronchitis'), nl,
+                    assert(checked('Bronchitis')),
+                    symptom_specifics
+                )
             );
         Highest = 'Influenza' ->
             (
                 % Specific for influenza
                 influenza_specifics,
-                (influenza_confirm -> write('you have influenza'));
-                write('you DO NOT have influenza')
+                (
+                    influenza_confirm -> write('you have influenza')
+                );
+                (
+                    write('you DO NOT have influenza'), nl,
+                    assert(checked('Influenza')),
+                    symptom_specifics
+                )
+            );
+        Highest = 'Tuberculosis' ->
+            (
+                % Specific for tuberculosis
+                tuberculosis_specifics,
+                (
+                    tuberculosis_confirm -> write('you have tuberculosis')
+                );
+                (
+                    write('you DO NOT have tuberculosis'), nl,
+                    assert(checked('Tuberculosis')),
+                    symptom_specifics
+                )
+            );
+        Highest = _ ->
+            (
+                write('No disease found'), nl
             )
         % Highest = 'Tuberculosis' ->
         %     (
@@ -592,7 +723,6 @@ symptom_specifics :-
     ).
 
 :- dynamic checked/1.
-checked('Influenza').
 
 % Main Function
 :- initialization(main).
@@ -625,7 +755,7 @@ main :-
                 add_dengue,
                 add_tetanus
             );
-        Answer1 = 'n' -> true
+        Answer1 = 'n' -> assert(fever(0))
     ),
     askSymptom('Do you have a headache? (y/n) ', head_ache(1), Answer2),             % Similarity Count: 6
     (
@@ -638,7 +768,7 @@ main :-
                 add_malaria,
                 add_tetanus
             );
-        Answer2 = 'n' -> true
+        Answer2 = 'n' -> assert(head_ache(0))
     ),
     askSymptom('Are you experiencing coughing? (y/n) ', cough(1), Answer3),          % Similarity Count: 5
     (
@@ -650,7 +780,7 @@ main :-
                 add_measles,
                 add_schistosomiasis
             );
-        Answer3 = 'n' -> true
+        Answer3 = 'n' -> assert(cough(0))
     ),
     askSymptom('Have you vomited recently? (y/n) ', vomiting(1), Answer4),           % Similarity Count: 4
     (
@@ -661,7 +791,7 @@ main :-
                 add_malaria,
                 add_dengue
             );
-        Answer4 = 'n' -> true
+        Answer4 = 'n' -> assert(vomiting(0))
     ),
     askSymptom('Are you experiencing body aches? (y/n) ', body_ache(1), Answer5),    % Similarity Count: 4
     (
@@ -672,7 +802,7 @@ main :-
                 add_malaria,
                 add_schistosomiasis
             );
-        Answer5 = 'n' -> true
+        Answer5 = 'n' -> assert(body_ache(0))
     ),
     askSymptom('Are you experiencing fatigue? (y/n) ', fatigue(1), Answer6),         % Similarity Count: 4
     (
@@ -683,7 +813,7 @@ main :-
                 add_chicken_pox,
                 add_dengue
             );
-        Answer6 = 'n' -> true
+        Answer6 = 'n' -> assert(fatigue(0))
     ),
     askSymptom('Are you experiencing rashes? (y/n) ', rashes(1), Answer7),           % Similarity Count: 4
     (
@@ -694,8 +824,7 @@ main :-
                 add_schistosomiasis,
                 add_dengue
             );
-        Answer7 = 'n' -> true
+        Answer7 = 'n' -> assert(rashes(0))
     ),
-
     % Score the diseases
     symptom_specifics.
