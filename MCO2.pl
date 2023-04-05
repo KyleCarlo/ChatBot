@@ -298,6 +298,7 @@ getScore(Highest) :-
             )
         )
     ),
+    write(NewDisWords9), nl,
     index_of_Max(NewDiseases9, 0, _),
     max(Index),
     nth0(Index, NewDisWords9, Highest).
