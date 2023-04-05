@@ -295,20 +295,76 @@ bronchitis_confirm :-
         head_ache(1)
     ).
 
+% Symptoms of Diseases
+influenza_specifics :- 
+    (
+        current_predicate(sore_throat/1);
+        askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer8),
+        (
+            Answer8 = 'y' ->
+                (
+                    add_bronchitis
+                );
+            Answer8 = 'n' -> true
+        )
+    ),
+    (
+        runny_nose(1);
+        askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
+        (
+            Answer9 = 'y' ->
+                (
+                    add_measles
+                );
+            Answer9 = 'n' -> true
+        )
+    ).
+
+bronchitis_specifics :- 
+    (
+        (
+            current_predicate(soreness_chest/1);
+            askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', 
+                        soreness_chest(1), Answer8),
+            (
+                Answer8 = 'y' ->
+                    (
+                        add_influenza,
+                        add_bronchitis
+                    );
+                Answer8 = 'n' -> true
+            )
+        ),
+        (
+            current_predicate(runny_nose/1);
+            askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
+            (
+                Answer9 = 'y' ->
+                    (
+                        add_influenza,
+                        add_measles
+                    );
+                Answer9 = 'n' -> true
+            )
+        )
+    )
+
+
+% Main Function
 :- initialization(main).
 main :- 
-    % Ask for the patient's name, age, and sex
-    introduction,
-    write('========================================================================'), nl,
-    write('                          PATIENT INFORMATION'), nl,
-    write('========================================================================'), nl,
-    % Ask for the demographics of the patient.
-    demographics,
-    write('========================================================================'), nl,nl,nl,
+    % % Ask for the patient's name, age, and sex
+    % introduction,
+    % write('========================================================================'), nl,
+    % write('                          PATIENT INFORMATION'), nl,
+    % write('========================================================================'), nl,
+    % % Ask for the demographics of the patient.
+    % demographics,
+    % write('========================================================================'), nl,nl,nl,
 
-    write('========================================================================'), nl,
-    write('                               SYMPTOMS'), nl,
-    write('========================================================================'), nl,
+    % write('========================================================================'), nl,
+    % write('                               SYMPTOMS'), nl,
+    % write('========================================================================'), nl,
 
     % Ask for the symptoms with duplication.
     askSymptom('Do you have a fever? (y/n) ', fever(1), Answer1),                    % Similarity Count: 9
@@ -399,28 +455,17 @@ main :-
 
     % Score the diseases
     getScore(Highest),
+    write(Highest), nl,
     (
         Highest = 'Influenza' ->
             (
                 % Specific for influenza
-                askSymptom('Do you have a sore throat? (y/n) ', sore_throat(1), Answer8),
-                (
-                    Answer8 = 'y' ->
-                        (
-                            add_influenza,
-                            add_bronchitis
-                        );
-                    Answer8 = 'n' -> true
-                ),
-                askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer9),
-                (
-                    Answer9 = 'y' ->
-                        (
-                            add_influenza,
-                            add_measles
-                        );
-                    Answer9 = 'n' -> true
-                )
+                influenza_specifics
+            );
+        Highest = 'Bronchitis' ->
+            (
+                % Specific for bronchitis
+                
             );
         Highest = _ -> true
     ).
