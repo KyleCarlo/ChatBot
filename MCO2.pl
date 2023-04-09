@@ -229,12 +229,13 @@ getScore(Highest) :-
     malaria(Malaria),
     schistosomiasis(Schistosomiasis),
     dengue(Dengue),
+    tetanus(Tetanus),
     [_|Diseases] = [_, Diarrhea, Bronchitis, Influenza, 
                     Tuberculosis, ChickenPox, Measles, 
-                    Malaria, Schistosomiasis, Dengue],
+                    Malaria, Schistosomiasis, Dengue, Tetanus],
     [_|DisWords] = [_, 'Diarrhea', 'Bronchitis', 'Influenza', 
                     'Tuberculosis', 'Chicken Pox', 'Measles', 
-                    'Malaria', 'Schistosomiasis', 'Dengue'],
+                    'Malaria', 'Schistosomiasis', 'Dengue','Tetanus'],
     (
         (
             checked('Diarrhea') -> 
@@ -351,9 +352,20 @@ getScore(Highest) :-
     write(NewDiseases9), nl,
     delete_all(-1, NewDiseases9, ResultDiseases),
     delete_all(-1, NewDisWords9, ResultDisWords),
-    index_of_Max(ResultDiseases, 0, _),
-    max(Index),
-    nth0(Index, ResultDisWords, Highest).
+    length(ResultDiseases, ListLength), 
+    write(ResultDiseases), nl,
+    (
+        ListLength > 0,
+            (
+                index_of_Max(ResultDiseases, 0, _),
+                write('confirm 3'), nl,
+                max(Index),
+                write('Index: '), 
+                write(Index), nl,
+                nth0(Index, ResultDisWords, Highest)
+            );
+        Highest = 'No Disease'
+    ).
 
 % Disease Scores
 % 1 - Diarrhea
@@ -464,8 +476,8 @@ diarrhea_confirm :-
     ).
 
 bronchitis_confirm :-
-    soreness_chest(1),
     cough(1),
+    soreness_chest(1),
     (
         sore_throat(1);
         body_ache(1);
@@ -530,32 +542,35 @@ malaria_confirm :-
     ).
     
 schistosomiasis_confirm :-
-    fever(1),
-    body_ache(1),
-    cough(1),
     rashes(1),
-    chills(1).
+    chills(1),
+    (
+        fever(1);
+        body_ache(1);
+        cough(1)
+    ).
 
 dengue_confirm :-
-    vomiting(1),
-    fever(1),
-    fatigue(1),
-    rashes(1),
     increased_respiratory_rate(1),
     bleeding_from_gums_or_nose(1),
     blood_in_urine(1),
     bruises(1),
-    eye_pain(1).
+    eye_pain(1),
+    (
+        fatigue(1);
+        rashes(1);
+        vomiting(1);
+        fever(1)
+    ).
 
 tetanus_confirm :-
-    lock_jaw(1),
-    muscle_spasm(1),
     trouble_swallowing(1),
+    muscle_spasm(1),
     seizures(1),
     (
         head_ache(1);
         fever(1);
-        sweats(1);
+        sweating(1);
         changes_in_blood_pressure(1)
     ).
 
@@ -593,6 +608,7 @@ diarrhea_specifics :-
 bronchitis_specifics :- 
     (
         % Similarity count: 2
+        cough(1),
         (current_predicate(soreness_chest/1), soreness_chest(_)) -> true;
         askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', soreness_chest(1), Answer10),
         (
@@ -708,14 +724,6 @@ chicken_pox_specifics :-
 
 measles_specifics :-
     (
-        % Similarity count: 1
-        askSymptom('Do you have koplik spots (white spots in mouth)? (y/n) ', koplik_spots(1), Answer16),
-        (
-            Answer16 = 'y' -> true;
-            Answer16 = 'n' -> assert(koplik_spots(0))
-        )
-    ),
-    (
         % Similarity count: 2
         (current_predicate(runny_nose/1), runny_nose(_)) -> true;
         askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer17),
@@ -725,6 +733,14 @@ measles_specifics :-
                     add_influenza
                 );
             Answer17 = 'n' -> assert(runny_nose(0))
+        )
+    ),
+    (
+        % Similarity count: 1
+        askSymptom('Do you have koplik spots (white spots in mouth)? (y/n) ', koplik_spots(1), Answer16),
+        (
+            Answer16 = 'y' -> true;
+            Answer16 = 'n' -> assert(koplik_spots(0))
         )
     ),
     (
@@ -746,7 +762,10 @@ malaria_specifics :-
         (current_predicate(sweating/1), sweating(_)) -> true;
         askSymptom('Have you been experiencing excessive sweating? (y/n)', sweating(1), Answer20),
         (
-            Answer20 = 'y' -> true;
+            Answer20 = 'y' -> 
+                (
+                    add_tetanus
+                );
             Answer20 = 'n' -> assert(sweating(0))
         )
     ),
@@ -797,15 +816,21 @@ malaria_specifics :-
 
 schistosomiasis_specifics :-
     (
-        askSymptom('Have you been experiencing chills? (y/n) ', chills(1), Answer24),
-        (
-            Answer24 = 'y' -> true;
-            Answer24 = 'n' -> assert(chills(0))
-        )
+        % Similarity count: 1
+        (rashes(1))-> 
+            (
+                askSymptom('Have you been experiencing chills? (y/n) ', chills(1), Answer24),
+                (
+                    Answer24 = 'y' -> true;
+                    Answer24 = 'n' -> assert(chills(0))
+                )
+            );
+        assert(chills(0))
     ).
 
 dengue_specifics :-
     (
+        % Similarity count: 1
         askSymptom('Have you been experiencing increased respiratory rate? (y/n) ', increased_respiratory_rate(1), Answer25),
         (
             Answer25 = 'y' -> true;
@@ -813,50 +838,74 @@ dengue_specifics :-
         )
     ),
     (
-        askSymptom('Have you been experiencing bleeding from gums or nose? (y/n) ', bleeding_from_gums_or_nose(1), Answer26),
+        % Similarity count: 1
+        increased_respiratory_rate(1) ->
         (
-            Answer26 = 'y' -> true;
-            Answer26 = 'n' -> assert(bleeding_from_gums_or_nose(0))
+            askSymptom('Have you been experiencing bleeding from gums or nose? (y/n) ', bleeding_from_gums_or_nose(1), Answer26),
+            (
+                Answer26 = 'y' -> true;
+                Answer26 = 'n' -> assert(bleeding_from_gums_or_nose(0))
+            )
         )
     ),
     (
-        askSymptom('Have you been experiencing blood in urine? (y/n) ', blood_in_urine(1), Answer27),
+        % Similarity count: 1
         (
-            Answer27 = 'y' -> true;
-            Answer27 = 'n' -> assert(blood_in_urine(0))
+            increased_respiratory_rate(1), bleeding_from_gums_or_nose(1),
+            (
+                askSymptom('Have you been experiencing blood in urine? (y/n) ', blood_in_urine(1), Answer27),
+                (
+                    Answer27 = 'y' -> true;
+                    Answer27 = 'n' -> assert(blood_in_urine(0))
+                )
+            )
         )
     ),
     (
-        askSymptom('Have you been experiencing bruises? (y/n) ', bruises(1), Answer28),
         (
-            Answer28 = 'y' -> true;
-            Answer28 = 'n' -> assert(bruises(0))
-        )
+            increased_respiratory_rate(1), 
+            bleeding_from_gums_or_nose(1),
+            blood_in_urine(1)
+        ) ->
+            (
+                askSymptom('Do you have bruises? (y/n) ', bruises(1), Answer28),
+                (
+                    Answer28 = 'y' -> true;
+                    Answer28 = 'n' -> assert(bruises(0))
+                )
+            )
     ),
     (
-        askSymptom('Have you been experiencing eye pain? (y/n) ', eye_pain(1), Answer29),
         (
-            Answer29 = 'y' -> true;
-            Answer29 = 'n' -> assert(eye_pain(0))
-        )
+            increased_respiratory_rate(1), 
+            bleeding_from_gums_or_nose(1),
+            blood_in_urine(1),
+            bruises(1)
+        ) ->
+            (
+                askSymptom('Have you been experiencing eye pain? (y/n) ', eye_pain(1), Answer29),
+                (
+                    Answer29 = 'y' -> true;
+                    Answer29 = 'n' -> assert(eye_pain(0))
+                )
+            )
     ).
 
 tetanus_specifics :-
     (
-        askSymptom('Have you been experiencing sweating? (y/n)', sweating(1), Answer30),
+        % Similarity count: 2
+        (current_predicate(sweating/1), sweating(_)) -> true;
+        askSymptom('Have you been experiencing excessive sweating? (y/n)', sweating(1), Answer30),
         (
-            Answer30 = 'y' -> true;
+            Answer30 = 'y' -> 
+                (
+                    add_malaria
+                );
             Answer30 = 'n' -> assert(sweating(0))
         )
     ),
     (
-        askSymptom('Have you been experiencing muscle spasm? (y/n)', muscle_spasm(1), Answer31),
-        (
-            Answer31 = 'y' -> true;
-            Answer31 = 'n' -> assert(muscle_spasm(0))
-        )
-    ),
-    (
+        % Similarity count: 1
         askSymptom('Have you been experiencing trouble in swallowing? (y/n)', trouble_swallowing(1), Answer32),
         (
             Answer32 = 'y' -> true;
@@ -864,18 +913,37 @@ tetanus_specifics :-
         )
     ),
     (
-        askSymptom('Have you been experiencing seizures? (y/n)', seizures(1), Answer33),
-        (
-            Answer33 = 'y' -> true;
-            Answer33 = 'n' -> assert(seizures(0))
-        )
+        % Similarity count: 1
+        trouble_swallowing(1) ->
+            (
+                askSymptom('Have you been experiencing muscle spasm? (y/n)', muscle_spasm(1), Answer31),
+                (
+                    Answer31 = 'y' -> true;
+                    Answer31 = 'n' -> assert(muscle_spasm(0))
+                )
+            )
     ),
     (
-        askSymptom('Have you been experiencing changes in blood pressure? (y/n)', changes_in_blood_pressure(1), Answer34),
-        (
-            Answer34 = 'y' -> true;
-            Answer34 = 'n' -> assert(changes_in_blood_pressure(0))
-        )
+        % Similarity count: 1
+        (trouble_swallowing(1), muscle_spasm(1)) ->
+            (
+                askSymptom('Have you been experiencing seizures? (y/n)', seizures(1), Answer33),
+                (
+                    Answer33 = 'y' -> true;
+                    Answer33 = 'n' -> assert(seizures(0))
+                )
+            )
+    ),
+    (
+        % Similarity count: 1
+        (trouble_swallowing(1), muscle_spasm(1), seizures(1)) ->
+            (
+                askSymptom('Have you been experiencing changes in blood pressure? (y/n)', changes_in_blood_pressure(1), Answer34),
+                (
+                    Answer34 = 'y' -> true;
+                    Answer34 = 'n' -> assert(changes_in_blood_pressure(0))
+                )
+            )
     ).
 
 % Treatment for the diseases
@@ -1086,7 +1154,10 @@ symptom_specifics :-
         Highest = _ ->
             (
                 write('No disease found'), nl
-            )
+            );
+        
+        write('Highest'),
+        write(Highest)
     ).
 
 :- dynamic checked/1.
@@ -1193,7 +1264,4 @@ main :-
             );
         Answer7 = 'n' -> assert(rashes(0))
     ),
-    
     symptom_specifics.
-
-    % changes ----
