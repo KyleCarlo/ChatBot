@@ -348,20 +348,17 @@ getScore(Highest) :-
             )
         )
     ),
-    write(NewDisWords9), nl,
-    write(NewDiseases9), nl,
+    % write(NewDisWords9), nl,
+    % write(NewDiseases9), nl,
     delete_all(-1, NewDiseases9, ResultDiseases),
     delete_all(-1, NewDisWords9, ResultDisWords),
     length(ResultDiseases, ListLength), 
-    write(ResultDiseases), nl,
+    % write(ResultDiseases), nl,
     (
         ListLength > 0,
             (
                 index_of_Max(ResultDiseases, 0, _),
-                write('confirm 3'), nl,
                 max(Index),
-                write('Index: '), 
-                write(Index), nl,
                 nth0(Index, ResultDisWords, Highest)
             );
         Highest = 'No Disease'
@@ -501,6 +498,7 @@ tuberculosis_confirm :-
     coughing_blood(1),
     night_sweats(1),
     (
+        soreness_chest(1);
         weakness(1);
         fever(1);
         weight_loss(1);
@@ -529,13 +527,13 @@ measles_confirm :-
     ).
         
 malaria_confirm :-
-    shivering(1),
-    fever(1),
     vomiting(1),
+    shivering(1),
     sweating(1),
     mild_jaundice(1),
     increased_respiratory_rate(1),
     (
+        fever(1);
         head_ache(1);
         body_ache(1);
         weakness(1)
@@ -672,51 +670,57 @@ tuberculosis_specifics :-
         )
     ),
     (
-        % Similarity count: 1
-        askSymptom('Have you experienced any unexplained weight loss?', weight_loss(1), Answer11),
-        (
-            Answer11 = 'y' -> true;
-            Answer11 = 'n' -> assert(weight_loss(0))
-        )
-    ),
-    (
-        % Similarity count: 1
-        askSymptom('Have you been experiencing night sweats?', night_sweats(1), Answer12),
-        (
-            Answer12 = 'y' -> true;
-            Answer12 = 'n' -> assert(night_sweats(0))
-        )
-    ),
-    (
-        % Similarity count: 1
-        askSymptom('Have you coughed up any blood?', coughing_blood(1), Answer13),
-        (
-            Answer13 = 'y' -> true;
-            Answer13 = 'n' -> assert(coughing_blood(0))
-        )
-    ),
-    (
+        % Similarity count: 2
         (current_predicate(soreness_chest/1), soreness_chest(_)) -> true;
-        askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', soreness_chest(1), Answer14),
+        askSymptom('Do you have any soreness or discomfort in your chest? (y/n) ', soreness_chest(1), Answer18),
         (
-            Answer14 = 'y' -> 
+            Answer18 = 'y' -> 
                 (
                     add_bronchitis
                 );
-            Answer14 = 'n' -> assert(soreness_chest(0))
+            Answer18 = 'n' -> assert(soreness_chest(0))
         )
+    ),
+    (
+        % Similarity count: 1
+        askSymptom('Have you experienced any weight loss?', weight_loss(1), Answer15),
+        (
+            Answer15 = 'y' -> true;
+            Answer15 = 'n' -> assert(weight_loss(0))
+        )
+    ),
+    (
+        % Similarity count: 1
+        cough(1) ->
+        (
+            askSymptom('Have you coughed up any blood?', coughing_blood(1), Answer17),
+            (
+                Answer17 = 'y' -> true;
+                Answer17 = 'n' -> assert(coughing_blood(0))
+            )
+        )
+    ),
+    (
+        % Similarity count: 1
+        (cough(1), coughing_blood(1)) ->
+            (
+                askSymptom('Have you been experiencing night sweats?', night_sweats(1), Answer16),
+                (
+                    Answer16 = 'y' -> true;
+                    Answer16 = 'n' -> assert(night_sweats(0))
+                )
+            )
     ).
-
 
 chicken_pox_specifics :-
     (
         % Similarity count: 1
         rashes(1) ->
         (
-            askSymptom('Have you been experiencing loss of appetite? (y/n) ', loss_of_appetite(1), Answer15),
+            askSymptom('Have you been experiencing loss of appetite? (y/n) ', loss_of_appetite(1), Answer19),
             (
-                Answer15 = 'y' -> true;
-                Answer15 = 'n' -> assert(loss_of_appetite(0))
+                Answer19 = 'y' -> true;
+                Answer19 = 'n' -> assert(loss_of_appetite(0))
             )
         );
         true
@@ -726,31 +730,34 @@ measles_specifics :-
     (
         % Similarity count: 2
         (current_predicate(runny_nose/1), runny_nose(_)) -> true;
-        askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer17),
+        askSymptom('Do you have a runny nose? (y/n) ', runny_nose(1), Answer20),
         (
-            Answer17 = 'y' -> 
+            Answer20 = 'y' -> 
                 (
                     add_influenza
                 );
-            Answer17 = 'n' -> assert(runny_nose(0))
+            Answer20 = 'n' -> assert(runny_nose(0))
         )
     ),
     (
         % Similarity count: 1
-        askSymptom('Do you have koplik spots (white spots in mouth)? (y/n) ', koplik_spots(1), Answer16),
-        (
-            Answer16 = 'y' -> true;
-            Answer16 = 'n' -> assert(koplik_spots(0))
-        )
+        (rashes(1)) ->
+            (
+                askSymptom('Do you have koplik spots (white spots in mouth)? (y/n) ', koplik_spots(1), Answer21),
+                (
+                    Answer21 = 'y' -> true;
+                    Answer21 = 'n' -> assert(koplik_spots(0))
+                )
+            )
     ),
     (
         % Similarity count: 1
         (rashes(1),koplik_spots(1)) ->
             (
-                askSymptom('Have you been experiencing red watery eyes? (y/n) ', red_watery_eyes(1), Answer18),
+                askSymptom('Have you been experiencing red watery eyes? (y/n) ', red_watery_eyes(1), Answer22),
                 (
-                    Answer18 = 'y' -> true;
-                    Answer18 = 'n' -> assert(red_watery_eyes(0))
+                    Answer22 = 'y' -> true;
+                    Answer22 = 'n' -> assert(red_watery_eyes(0))
                 )
             );
         true
@@ -760,58 +767,59 @@ malaria_specifics :-
     (
         % Similarity count: 2
         (current_predicate(sweating/1), sweating(_)) -> true;
-        askSymptom('Have you been experiencing excessive sweating? (y/n)', sweating(1), Answer20),
+        askSymptom('Have you been experiencing excessive sweating? (y/n)', sweating(1), Answer23),
         (
-            Answer20 = 'y' -> 
+            Answer23 = 'y' -> 
                 (
                     add_tetanus
                 );
-            Answer20 = 'n' -> assert(sweating(0))
+            Answer23 = 'n' -> assert(sweating(0))
         )
     ),
     (
         % Similarity count: 2
         (current_predicate(weakness/1), weakness(_)) -> true;
-        askSymptom('Have you been experiencing weakness? (y/n) ', weakness(1), Answer19),
+        askSymptom('Have you been experiencing weakness? (y/n) ', weakness(1), Answer24),
         (
-            Answer19 = 'y' -> 
+            Answer24 = 'y' -> 
                 (
                     add_tuberculosis
                 );
-            Answer19 = 'n' -> assert(weakness(0))
+            Answer24 = 'n' -> assert(weakness(0))
         )
     ),
     (
         % Similarity count: 1
-        askSymptom('Have you been experiencing shivering? (y/n)', shivering(1), Answer21),
-        (
-            Answer21 = 'y' -> true;
-            Answer21 = 'n' -> assert(shivering(0))
-        )
-    ),
-    (
-        % Similarity count: 1
-        shivering(1) -> 
+        (vomiting(1))->
             (
-                askSymptom('Have you been experiencing mild jaundice? (y/n)', mild_jaundice(1), Answer22),
-                (
-                    Answer22 = 'y' -> true;
-                    Answer22 = 'n' -> assert(mild_jaundice(0))
-                );
-                assert(mild_jaundice(0))
+                askSymptom('Have you been experiencing shivering? (y/n)', shivering(1), Answer25),
+                    (
+                        Answer25 = 'y' -> true;
+                        Answer25 = 'n' -> assert(shivering(0))
+                    )
             )
     ),
     (
         % Similarity count: 1
-        (shivering(1),mild_jaundice(1))-> 
+        (vomiting(1), shivering(1)) -> 
             (
-                askSymptom('Have you been experiencing increased respiratory rate? (y/n)', increased_respiratory_rate(1), Answer23),
+                askSymptom('Have you been experiencing mild jaundice? (y/n)', mild_jaundice(1), Answer26),
                 (
-                    Answer23 = 'y' -> true;
-                    Answer23 = 'n' -> assert(increased_respiratory_rate(0))
+                    Answer26 = 'y' -> true;
+                    Answer26 = 'n' -> assert(mild_jaundice(0))
                 )
-            );
-        assert(increased_respiratory_rate(0))
+            )
+    ),
+    (
+        % Similarity count: 1
+        (vomiting(1), shivering(1),mild_jaundice(1))-> 
+            (
+                askSymptom('Have you been experiencing increased respiratory rate? (y/n)', increased_respiratory_rate(1), Answer27),
+                (
+                    Answer27 = 'y' -> true;
+                    Answer27 = 'n' -> assert(increased_respiratory_rate(0))
+                )
+            )
     ).
 
 schistosomiasis_specifics :-
@@ -819,10 +827,10 @@ schistosomiasis_specifics :-
         % Similarity count: 1
         (rashes(1))-> 
             (
-                askSymptom('Have you been experiencing chills? (y/n) ', chills(1), Answer24),
+                askSymptom('Have you been experiencing chills? (y/n) ', chills(1), Answer28),
                 (
-                    Answer24 = 'y' -> true;
-                    Answer24 = 'n' -> assert(chills(0))
+                    Answer28 = 'y' -> true;
+                    Answer28 = 'n' -> assert(chills(0))
                 )
             );
         assert(chills(0))
@@ -831,20 +839,20 @@ schistosomiasis_specifics :-
 dengue_specifics :-
     (
         % Similarity count: 1
-        askSymptom('Have you been experiencing increased respiratory rate? (y/n) ', increased_respiratory_rate(1), Answer25),
+        askSymptom('Have you been experiencing increased respiratory rate? (y/n) ', increased_respiratory_rate(1), Answer29),
         (
-            Answer25 = 'y' -> true;
-            Answer25 = 'n' -> assert(increased_respiratory_rate(0))
+            Answer29 = 'y' -> true;
+            Answer29 = 'n' -> assert(increased_respiratory_rate(0))
         )
     ),
     (
         % Similarity count: 1
         increased_respiratory_rate(1) ->
         (
-            askSymptom('Have you been experiencing bleeding from gums or nose? (y/n) ', bleeding_from_gums_or_nose(1), Answer26),
+            askSymptom('Have you been experiencing bleeding from gums or nose? (y/n) ', bleeding_from_gums_or_nose(1), Answer30),
             (
-                Answer26 = 'y' -> true;
-                Answer26 = 'n' -> assert(bleeding_from_gums_or_nose(0))
+                Answer30 = 'y' -> true;
+                Answer30 = 'n' -> assert(bleeding_from_gums_or_nose(0))
             )
         )
     ),
@@ -853,10 +861,10 @@ dengue_specifics :-
         (
             increased_respiratory_rate(1), bleeding_from_gums_or_nose(1),
             (
-                askSymptom('Have you been experiencing blood in urine? (y/n) ', blood_in_urine(1), Answer27),
+                askSymptom('Have you been experiencing blood in urine? (y/n) ', blood_in_urine(1), Answer31),
                 (
-                    Answer27 = 'y' -> true;
-                    Answer27 = 'n' -> assert(blood_in_urine(0))
+                    Answer31 = 'y' -> true;
+                    Answer31 = 'n' -> assert(blood_in_urine(0))
                 )
             )
         )
@@ -868,10 +876,10 @@ dengue_specifics :-
             blood_in_urine(1)
         ) ->
             (
-                askSymptom('Do you have bruises? (y/n) ', bruises(1), Answer28),
+                askSymptom('Do you have bruises? (y/n) ', bruises(1), Answer32),
                 (
-                    Answer28 = 'y' -> true;
-                    Answer28 = 'n' -> assert(bruises(0))
+                    Answer32 = 'y' -> true;
+                    Answer32 = 'n' -> assert(bruises(0))
                 )
             )
     ),
@@ -883,10 +891,10 @@ dengue_specifics :-
             bruises(1)
         ) ->
             (
-                askSymptom('Have you been experiencing eye pain? (y/n) ', eye_pain(1), Answer29),
+                askSymptom('Have you been experiencing eye pain? (y/n) ', eye_pain(1), Answer33),
                 (
-                    Answer29 = 'y' -> true;
-                    Answer29 = 'n' -> assert(eye_pain(0))
+                    Answer33 = 'y' -> true;
+                    Answer33 = 'n' -> assert(eye_pain(0))
                 )
             )
     ).
@@ -895,31 +903,31 @@ tetanus_specifics :-
     (
         % Similarity count: 2
         (current_predicate(sweating/1), sweating(_)) -> true;
-        askSymptom('Have you been experiencing excessive sweating? (y/n)', sweating(1), Answer30),
+        askSymptom('Have you been experiencing excessive sweating? (y/n)', sweating(1), Answer34),
         (
-            Answer30 = 'y' -> 
+            Answer34 = 'y' -> 
                 (
                     add_malaria
                 );
-            Answer30 = 'n' -> assert(sweating(0))
+            Answer34 = 'n' -> assert(sweating(0))
         )
     ),
     (
         % Similarity count: 1
-        askSymptom('Have you been experiencing trouble in swallowing? (y/n)', trouble_swallowing(1), Answer32),
+        askSymptom('Have you been experiencing trouble in swallowing? (y/n)', trouble_swallowing(1), Answer35),
         (
-            Answer32 = 'y' -> true;
-            Answer32 = 'n' -> assert(trouble_swallowing(0))
+            Answer35 = 'y' -> true;
+            Answer35 = 'n' -> assert(trouble_swallowing(0))
         )
     ),
     (
         % Similarity count: 1
         trouble_swallowing(1) ->
             (
-                askSymptom('Have you been experiencing muscle spasm? (y/n)', muscle_spasm(1), Answer31),
+                askSymptom('Have you been experiencing muscle spasm? (y/n)', muscle_spasm(1), Answer36),
                 (
-                    Answer31 = 'y' -> true;
-                    Answer31 = 'n' -> assert(muscle_spasm(0))
+                    Answer36 = 'y' -> true;
+                    Answer36 = 'n' -> assert(muscle_spasm(0))
                 )
             )
     ),
@@ -927,10 +935,10 @@ tetanus_specifics :-
         % Similarity count: 1
         (trouble_swallowing(1), muscle_spasm(1)) ->
             (
-                askSymptom('Have you been experiencing seizures? (y/n)', seizures(1), Answer33),
+                askSymptom('Have you been experiencing seizures? (y/n)', seizures(1), Answer37),
                 (
-                    Answer33 = 'y' -> true;
-                    Answer33 = 'n' -> assert(seizures(0))
+                    Answer37 = 'y' -> true;
+                    Answer37 = 'n' -> assert(seizures(0))
                 )
             )
     ),
@@ -938,100 +946,182 @@ tetanus_specifics :-
         % Similarity count: 1
         (trouble_swallowing(1), muscle_spasm(1), seizures(1)) ->
             (
-                askSymptom('Have you been experiencing changes in blood pressure? (y/n)', changes_in_blood_pressure(1), Answer34),
+                askSymptom('Have you been experiencing changes in blood pressure? (y/n)', changes_in_blood_pressure(1), Answer38),
                 (
-                    Answer34 = 'y' -> true;
-                    Answer34 = 'n' -> assert(changes_in_blood_pressure(0))
+                    Answer38 = 'y' -> true;
+                    Answer38 = 'n' -> assert(changes_in_blood_pressure(0))
                 )
             )
     ).
 
 % Treatment for the diseases
 diarrhea_treatment :-
-    write('\nYou may have Diarrhea, the following are the possible treatments for the disease:'), nl,
-    write('\n\t- Drink more fluids 
-        - Avoid fatty, high-fiber, or highly seasoned foods. 
-        - Ask for basic medications for diarrhea'), nl,
-    write('\nNote: This diarrhoeal disease is a compilation of diseases that inhibits diarrhea as a symptom')    
+    write('\nYou may have DIARRHEA, the following are the possible treatments'),nl,
+    write('for the disease:'), nl, nl,
+
+    write('\t- Drink more fluids'), nl, 
+    write('\t- Avoid fatty, high-fiber, or highly seasoned foods'), nl,
+    write('\t- Avoid caffeine and alcohol'), nl,
+    write('\t- Recommended for BRAT diet'), nl,
+    write('\t\t- Bananas, Rice, Apple, Toast'), nl,
+    write('\t- Ask for basic medications for diarrhea'), nl,nl,
+    write('Note: You may have diarrhoeal disease.'),nl,
+    write('It is a compilation of diseases that inhibits diarrhea as a symptom.'),nl,
+    write('It is still best to consult a doctor to have a proper diagnosis.'),nl,nl
 .
 
 bronchitis_treatment :-
-    write('\nYou may have Bronchitis, the following are the possible treatments for the disease:'), nl,
-    write('\n\t- Get plenty of rest
-        - Drink plenty of fluids 
-        - Use a clean humidifier or cool mist vaporizer 
-        - Use saline nasal spray or drops 
-        - Breathe in steam from a bowl of hot water or shower
-        - Use honey
-        - Ask for doctor or pharmacist about over-the-counter medicines'), nl,
-    write('\nNote: Antibiotics may be required or not. If not required, antibiotics will not help ease the problem.')
+    write('\nYou may have BRONCHITIS, the following are the possible treatments for'),nl,
+    write('the disease:'), nl,nl,
+
+    write('\t- Get plenty of rest'),nl,
+    write('\t- Drink plenty of fluids'),nl,
+    write('\t- Use a clean humidifier or cool mist vaporizer'),nl,
+    write('\t- Use saline nasal spray or drops'),nl,
+    write('\t- Breathe in steam from a bowl of hot water or shower'),nl,
+    write('\t- Use honey to further help ease the symptoms'),nl,
+    write('\t- Ask for doctor or pharmacist about over-the-counter medicines'), nl,nl,
+    write('Note: Immediately consult a doctor for a proper diagnosis and treatment'),nl,
+    write('because bronchitis can be a serious illness. If left untreated, it can'),nl,
+    write('further develop and maybe related to other respiratory diseases.'),nl,nl
 .
 
 influenza_treatment :-
-    write('\nYou may have Influenza, the following are the possible treatments for the disease:'), nl,
-    write('\n- Ask for flu antiviral drug prescription')
+    write('\nYou may have INFLUENZA (Flu), the following are the possible treatments'), nl,
+    write('for the disease:'), nl, nl,
+
+    write('\t- Ask for flu antiviral drug prescription'),nl,
+    write('\t- Get a flu vaccine as advised by doctor'),nl,
+    write('\t- Drink plenty of fluids'),nl,
+    write('\t- Get plenty of rest'),nl,nl,
+    write('Note: It is still best to consult a doctor for the best diagnosis'),nl,
+    write('and treatment for the disease.'),nl,nl
 .
 
 tuberculosis_treatment :-
-    write('\nYou may have Tuberculosis, the following are the possible treatments for the disease:'), nl,
-    write('\n- Directly observed therapy (DOT)')
+    write('\nYou may have TUBERCULOSIS (TB), the following are the possible'),nl,
+    write('treatments for the disease:'), nl,nl,
+
+    write('\t- The doctor may prescribe anti-TB drugs'),nl,
+    write('\t- Ask for TB-DOT in local government units'),nl,
+    write('\t\t- Tuberculosis Directly Observed therapy (DOT)'),nl,nl,
+
+    write('Note: Please consult a doctor for proper diagnosis and instructions.'),nl,
+    write('TB can be infectious and can be transmitted to others.'),nl,
+    write('It is advised to practice proper hygiene and avoid contact with'),nl,
+    write('other people.'),nl,nl
 .
 
 chicken_pox_treatment :-
-    write('\nYou may have Chicken Pox, the following are the possible treatments for the disease:'), nl,
-    write('\n- Non-aspirin medications for fever relieve 
-        - Calamine lotion, cool bath with baking soda, uncooked oatmeal may help relieve itching.')
+    write('\nYou may have CHICKEN POX, the following are the possible treatments'),nl,
+    write('for the disease:'), nl,nl,
+
+    write('\t- Non-aspirin medications for fever relieve'), nl,
+    write('\t- Calamine lotion, cool bath with baking soda,'),nl,
+    write('\t  uncooked oatmeal to help relieve itching'),nl,
+    write('\t- Get a chicken pox vaccine as advised by doctor'),nl,
+    write('\t- Avoid scratching the blisters'),nl,
+    write('\t- Avoid spicy, acidic, or salty foods'), nl,
+
+    write('Note: It is advised to consult a doctor for proper diagnosis and'),nl,
+    write('treatment. There are other common diseases that can be very similar'),
+    write('with the symptoms of chicken pox.'),nl,nl
 .
 
 measles_treatment :-
-    write('\nYou may have Measles, the following are the possible treatments for the disease:'), nl,
-    write('\n\t- Fever reducers 
-        - Antibiotics if needed 
-        - Vitamin A'), nl,
-    write('\nNote: There is no specific treatment for this disease.')
+    write('\nYou may have MEASLES, the following are the possible treatments for'), nl,
+    write('the disease:'), nl,nl,
+
+    write('\t- Take fever reducers if you have fever'), nl,
+    write('\t- Ask for doctors if antibiotics are needed to ease symptoms'),nl,
+    write('\t- Take Vitamin A supplements'), nl,nl,
+
+    write('Note: There is no specific treatment for this disease. It is best to'),nl,
+    write('consult a doctor for proper diagnosis and treatment.'),nl,nl
 .
 
 malaria_treatment :-
-    write('\nYou may have Malaria, the following are the possible treatments for the disease:'), nl,
-    write('\n- Please refer to a doctor for a specific treatment immediately'), nl,
-    write('\nNote: The treatment for malaria is only done by professionals')
+    write('\nYou may have MALARIA, the following are the possible treatments for'),nl,
+    write('the disease:'), nl, nl,
+    write('\t- Antimalarial medications as instructed by doctors'), nl, nl,
+    write('Note: The treatment for malaria is only done by professionals. Please'), nl,
+    write('consult a doctor for proper diagnosis and treatment.'), nl, nl
 .
 
 schistosomiasis_treatment :- 
-    write('\nYou may have Schistosomiasis, the following are the possible treatments for the disease:'), nl,
-    write('\n- Ask for the prescription of praziquantel'), nl,
-    write('\nNote: Symptoms in schistosomiasis are present in measles')
+    write('\nYou may have SCHISTOSOMIASIS, the following are the possible'),nl,
+    write('treatments for the disease:'), nl,nl,
+    write('\t- Medications such as Praziquantel as prescribed by doctors'), nl,
+    write('\tNote: Symptoms in schistosomiasis are present in other diseases.'), nl,
+    write('It is best to have further testing with doctor consultation to confirm'),nl,
+    write('the schistosomiasis.'), nl, nl
 .
 
 dengue_treatment :-
-    write('\nYou may have Dengue, the following are the possible treatments for the disease:'), nl,
-    write('\n- Requires immediate medical care at a clinic')
+    write('\nYou may have DENGUE, requires immediate medical care!'), nl,
+    write('Please go to the nearest hospital for proper diagnosis and treatment.'), nl,
+    write('Dengue is a serious disease that can be fatal.'), nl, nl
 .
 
 tetanus_treatment :-
-    write('\nYou may have Tetanus, the following are the possible treatments for the disease:'), nl,
-    write('\n- Aggressive wound care 
-        - Antibiotics 
-        - Tetanus vaccination'), nl,
-    write('\nNote: Typhoid fever symptoms are covered by other diseases symptoms')
+    write('\nYou may have TETANUS, the following are the possible treatments'),nl,
+    write('for the disease:'), nl, nl,
+    write('\t- Aggressive wound care'), nl,
+    write('\t- Ask the doctors if antibiotics are needed'), nl,
+    write('\t- Tetanus vaccination as advised by doctors'), nl, nl,
+    write('Note: If you have a wound exposed to contamination such as soil,'),nl,
+    write('feces, dirt, water, or other contaminated materials, there is a high'),nl,
+    write('possibility that you have this disease. Please consult your doctor'),nl,
+    write('immediately.'), nl, nl
 .
 
-% Ask for the symptoms of the patient.
-symptom_specifics :-
+% Unclear Diagnosis
+unclear_treatment :-
+    retract(checked('Diarrhea')),
+    retract(checked('Bronchitis')),
+    retract(checked('Influenza')),
+    retract(checked('Tuberculosis')),
+    retract(checked('Chicken Pox')),
+    retract(checked('Measles')),
+    retract(checked('Malaria')),
+    retract(checked('Schistosomiasis')),
+    retract(checked('Dengue')),
+    retract(checked('Tetanus')),
     getScore(Highest),
-    write(Highest), nl,
+    write('\nDiagnosis is UNCLEAR, but based on your inputs the most'),nl,
+    format('probable disease is ~w.', [Highest]), nl,nl,
+    write('Please consult a doctor for in the nearest in the nearest'),nl,
+    write('clinic or hospital for proper diagnosis and treatment.'),nl,nl
+.
+
+diagnostic(Diagnosis) :-
+    Diagnosis = 'Diarrhea' -> diarrhea_treatment;
+    Diagnosis = 'Bronchitis' -> bronchitis_treatment;
+    Diagnosis = 'Influenza' -> influenza_treatment;
+    Diagnosis = 'Tuberculosis' -> tuberculosis_treatment;
+    Diagnosis = 'Chicken Pox' -> chicken_pox_treatment;
+    Diagnosis = 'Measles' -> measles_treatment;
+    Diagnosis = 'Malaria' -> malaria_treatment;
+    Diagnosis = 'Schistosomiasis' -> schistosomiasis_treatment;
+    Diagnosis = 'Dengue' -> dengue_treatment;
+    Diagnosis = 'Tetanus' -> tetanus_treatment;
+    Diagnosis = 'Unclear' -> unclear_treatment.
+
+% Ask for the symptoms of the patient.
+disease_specifics(Diagnosis) :-
+    getScore(Highest),
     (
         Highest = 'Diarrhea' -> 
             (
                 % Specific for diarrhea
                 diarrhea_specifics,
                 (
-                    diarrhea_confirm -> diarrhea_treatment
+                    diarrhea_confirm -> Diagnosis = 'Diarrhea'
                 ); 
                 (
-                    write('you DO NOT have diarrhea'), nl,
+                    % write('you DO NOT have diarrhea'), nl,
                     assert(checked('Diarrhea')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Bronchitis' ->
@@ -1039,12 +1129,12 @@ symptom_specifics :-
                 % Specific for bronchitis
                 bronchitis_specifics,
                 (
-                    bronchitis_confirm -> bronchitis_treatment
+                    bronchitis_confirm -> Diagnosis = 'Bronchitis'
                 );
                 (
-                    write('you DO NOT have bronchitis'), nl,
+                    % write('you DO NOT have bronchitis'), nl,
                     assert(checked('Bronchitis')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Influenza' ->
@@ -1052,12 +1142,12 @@ symptom_specifics :-
                 % Specific for influenza
                 influenza_specifics,
                 (
-                    influenza_confirm -> influenza_treatment
+                    influenza_confirm -> Diagnosis = 'Influenza'
                 );
                 (
-                    write('you DO NOT have influenza'), nl,
+                    % write('you DO NOT have influenza'), nl,
                     assert(checked('Influenza')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Tuberculosis' ->
@@ -1065,12 +1155,12 @@ symptom_specifics :-
                 % Specific for tuberculosis
                 tuberculosis_specifics,
                 (
-                    tuberculosis_confirm -> tuberculosis_treatment
+                    tuberculosis_confirm -> Diagnosis = 'Tuberculosis'
                 );
                 (
-                    write('you DO NOT have tuberculosis'), nl,
+                    % write('you DO NOT have tuberculosis'), nl,
                     assert(checked('Tuberculosis')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Chicken Pox' ->
@@ -1078,12 +1168,12 @@ symptom_specifics :-
                 % Specific for Chicken Pox
                 chicken_pox_specifics,
                 (
-                    chicken_pox_confirm -> chicken_pox_treatment
+                    chicken_pox_confirm -> Diagnosis = 'Chicken Pox'
                 );
                 (
-                    write('you DO NOT have chicken pox'), nl,
+                    % write('you DO NOT have chicken pox'), nl,
                     assert(checked('Chicken Pox')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Measles' ->
@@ -1091,12 +1181,12 @@ symptom_specifics :-
                 % Specific for measles
                 measles_specifics,
                 (
-                    measles_confirm -> measles_treatment
+                    measles_confirm -> Diagnosis = 'Measles'
                 );
                 (
-                    write('you DO NOT have measles'), nl,
+                    % write('you DO NOT have measles'), nl,s
                     assert(checked('Measles')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Malaria' ->
@@ -1104,12 +1194,12 @@ symptom_specifics :-
                 % Specific for Malaria
                 malaria_specifics,
                 (
-                    malaria_confirm -> malaria_treatment
+                    malaria_confirm -> Diagnosis = 'Malaria'
                 );
                 (
-                    write('you DO NOT have malaria'), nl,
+                    % write('you DO NOT have malaria'), nl,
                     assert(checked('Malaria')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Schistosomiasis' ->
@@ -1117,12 +1207,12 @@ symptom_specifics :-
                 % Specific for schistosomiasis
                 schistosomiasis_specifics,
                 (
-                    schistosomiasis_confirm -> schistosomiasis_treatment
+                    schistosomiasis_confirm -> Diagnosis = 'Schistosomiasis'
                 );
                 (
-                    write('you DO NOT have schistosomiasis'), nl,
+                    % write('you DO NOT have schistosomiasis'), nl,
                     assert(checked('Schistosomiasis')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Dengue' ->
@@ -1130,12 +1220,12 @@ symptom_specifics :-
                 % Specific for Dengue
                 dengue_specifics,
                 (
-                    dengue_confirm -> dengue_treatment
+                    dengue_confirm -> Diagnosis = 'Dengue'
                 );
                 (
-                    write('you DO NOT have dengue'), nl,
+                    % write('you DO NOT have dengue'), nl,
                     assert(checked('Dengue')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
         Highest = 'Tetanus' ->
@@ -1143,21 +1233,15 @@ symptom_specifics :-
                 % Specific for tetanus
                 tetanus_specifics,
                 (
-                    tetanus_confirm -> tetanus_treatment
+                    tetanus_confirm -> Diagnosis = 'Tetanus'
                 );
                 (
                     write('you DO NOT have tetanus'), nl,
                     assert(checked('Tetanus')),
-                    symptom_specifics
+                    disease_specifics(Diagnosis)
                 )
             );
-        Highest = _ ->
-            (
-                write('No disease found'), nl
-            );
-        
-        write('Highest'),
-        write(Highest)
+        Highest = _ -> Diagnosis = 'Unclear'
     ).
 
 :- dynamic checked/1.
@@ -1165,18 +1249,18 @@ symptom_specifics :-
 % Main Function
 :- initialization(main).
 main :- 
-    % % Ask for the patient's name, age, and sex
-    % introduction,
-    % write('========================================================================'), nl,
-    % write('                          PATIENT INFORMATION'), nl,
-    % write('========================================================================'), nl,
-    % % Ask for the demographics of the patient.
-    % demographics,
-    % write('========================================================================'), nl,nl,nl,
+    % Ask for the patient's name, age, and sex
+    introduction,
+    write('========================================================================'), nl,
+    write('                          PATIENT INFORMATION'), nl,
+    write('========================================================================'), nl,
+    % Ask for the demographics of the patient.
+    demographics,
+    write('========================================================================'), nl,nl,nl,
 
-    % write('========================================================================'), nl,
-    % write('                               SYMPTOMS'), nl,
-    % write('========================================================================'), nl,
+    write('========================================================================'), nl,
+    write('                               SYMPTOMS'), nl,
+    write('========================================================================'), nl,
 
     % Ask for the symptoms with duplication.
     askSymptom('Do you have a fever? (y/n) ', fever(1), Answer1),                    % Similarity Count: 9
@@ -1264,4 +1348,17 @@ main :-
             );
         Answer7 = 'n' -> assert(rashes(0))
     ),
-    symptom_specifics.
+
+    disease_specifics(Diagnosis),
+    write('========================================================================'), nl, nl, nl,
+
+    
+    write('========================================================================'), nl,
+    write('                               DIAGNOSIS'), nl,
+    write('========================================================================'), nl,
+    diagnostic(Diagnosis),
+    write('My diagnosis might be wrong, as I am limited to the diseases that I can'),nl,
+    write('diagnose. I am only designed to assist you in knowing your possible'),nl,
+    write('disease but will not become a substitute to any medical professionals.'), nl,nl,
+    write('========================================================================'),nl,nl,
+    write('Thank you for using MediBot!'),nl,nl.
