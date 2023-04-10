@@ -596,6 +596,7 @@ diarrhea_specifics :-
     ),
     (
         % Similarity count: 1
+        (watery_stool(1), (vomiting(1); fever(1); body_ache(1); head_ache(1); stomach_ache(1))) ->
         askSymptom('Do you experience bowel movements more frequently than usual? (y/n) ', frequent_poop(1), Answer10),
         (
             Answer10 = 'y' -> true;
