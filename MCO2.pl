@@ -1237,7 +1237,7 @@ disease_specifics(Diagnosis) :-
                     tetanus_confirm -> Diagnosis = 'Tetanus'
                 );
                 (
-                    write('you DO NOT have tetanus'), nl,
+                    % write('you DO NOT have tetanus'), nl,
                     assert(checked('Tetanus')),
                     disease_specifics(Diagnosis)
                 )
