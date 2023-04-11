@@ -1025,7 +1025,7 @@ chicken_pox_treatment :-
     write('\t- Avoid spicy, acidic, or salty foods'), nl,
 
     write('Note: It is advised to consult a doctor for proper diagnosis and'),nl,
-    write('treatment. There are other common diseases that can be very similar'),
+    write('treatment. There are other common diseases that can be very similar'), nl,
     write('with the symptoms of chicken pox.'),nl,nl
 .
 
