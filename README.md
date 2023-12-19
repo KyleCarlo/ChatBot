@@ -14,7 +14,7 @@ The knowledge base is structured based on prevalent infectious diseases in the P
 
 ### Program Flowchart
 
-![Program Flowchart](![image](https://github.com/KyleCarlo/ChatBot/assets/90784458/f4e94590-af26-4fb3-93d8-51e88ea0dd4e))
+![Program Flowchart](https://github.com/KyleCarlo/ChatBot/assets/90784458/f4e94590-af26-4fb3-93d8-51e88ea0dd4e)
 
 ## Results and Analysis
 
