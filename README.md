@@ -23,8 +23,9 @@ The chatbot efficiently prioritizes diseases and limits questions based on user 
 ### Sample Conversations
 
 #### Impressive Sample Conversation 1
-*User assumed to have influenza*
-![Impressive Sample Conversation 1](https://github.com/KyleCarlo/ChatBot/assets/90784458/5fa23ed3-2430-4bae-b550-b4bb7d371cfa)
+*User assumed to have influenza*<br>
+![Impressive Sample Conversation 1](https://github.com/KyleCarlo/ChatBot/assets/90784458/2f85d14d-c61c-4007-90ec-dddbbfe065a3)
+
 
 #### Impressive Sample Conversation 2
 *User assumed to have chickenpox with additional symptoms*<br>
