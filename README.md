@@ -1,4 +1,4 @@
-# Maze-Solving Bot - README
+# Maze-Solving Bot
 
 ## Introduction
 
