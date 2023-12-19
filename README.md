@@ -1,50 +1,54 @@
-# Maze-Solving Bot
+# Disease Diagnosis Chatbot - Project Documentation
 
 ## Introduction
 
-Welcome to the Maze-Solving Bot project, where we explore the potential of intelligent bots in navigating through mazes. The primary objective is to develop a bot capable of systematically searching each tile in a maze, considering priority values and heuristic values. The chosen algorithm, Greedy Best First Search, guides the bot's decision-making process by estimating the distance to the goal for each tile.
+The Disease Diagnosis Chatbot was designed to automate the process of diagnosing specific diseases, including diarrhea, bronchitis, influenza, tuberculosis, chickenpox, measles, malaria, schistosomiasis, dengue, and tetanus. The chatbot aims to assist individuals without immediate access to medical professionals or those seeking rough diagnoses based on symptoms. It is not a substitute for professional medical advice but serves as a tool for initial guidance.
 
-## Algorithm and Data Structure
+### Expertise and Significance
 
-The implemented algorithm, Greedy Best First Search, excels in efficiently searching through a large space of possible paths. It calculates the estimated distance from the current tile to the goal tile, prioritizing tiles with lower heuristic values. The Manhattan distance serves as a heuristic, estimating the cost of reaching the goal from each location. The use of Minimum Heap (Min Heap) as a data structure further optimizes the search process, storing the lowest priority node in its root node.
+Automating disease diagnosis requires expertise due to the complexity and variability of symptoms. Extensive research, including expert interviews and consultation with medical sources, ensures the chatbot provides accurate and reliable information. The chatbot's significance extends to revolutionizing disease diagnosis, aiding medical professionals, and improving healthcare outcomes.
 
-## Program
+## Knowledge Base and Chatbot
 
-- **Language:** JavaScript
-- **Execution Steps:**
-  1. Download the zip file.
-  2. Extract the zip file.
-  3. Run a web server for the project to run and open the project directory.
-  4. Use Visual Studio Code with the Live Server extension for a seamless experience.
+The knowledge base is structured based on prevalent infectious diseases in the Philippines. Symptoms are classified as common or disease-specific, determining the order of questions. Major and minor symptoms are defined, and disease confirmation follows logical conditions.
 
-## Test Cases
+### Program Flowchart
 
-Explore the bot's capabilities through the following test cases (text files in the zip file):
-
-1. **TestCase1 (maze.txt):** Demonstrates the bot's inability to find a path to the goal.
-2. **TestCase2 (maze1.txt):** Successfully navigates a 20x20 maze.
-3. **TestCase3 (maze2.txt):** Handles a 30x30 maze with more obstacles effectively.
-4. **TestCase4 (maze5.txt):** Navigates a large 50x50 maze with ease.
-5. **TestCase5 (maze4.txt):** Takes an alternative route before reaching the goal.
-6. **TestCase6 (maze5.txt):** Finds the goal after initial exploration failure.
+![Program Flowchart](link_to_image)
 
 ## Results and Analysis
 
-The bot excels in finding the shortest path in mazes, solving simple and moderately complex mazes efficiently. It adapts well to changing maze environments, although it may struggle with highly complex and convoluted paths. The performance may vary based on the size, resolution, and obstacles in the maze.
+The chatbot efficiently prioritizes diseases and limits questions based on user responses. However, being hard-coded limits flexibility and causes delays in redirection. Impressive and poor sample conversations showcase strengths and weaknesses, emphasizing the need for improvements.
+
+### Sample Conversations
+
+#### Impressive Sample Conversation 1
+*User assumed to have influenza*
+![Impressive Sample Conversation 1](link_to_image)
+
+#### Impressive Sample Conversation 2
+*User assumed to have chickenpox with additional symptoms*
+![Impressive Sample Conversation 2](link_to_image)
+
+#### Poor Sample Conversation 1
+*User assumed to have tetanus*
+![Poor Sample Conversation 1](link_to_image)
+
+#### Poor Sample Conversation 2
+*User with no symptoms, defaulting to diarrhea*
+![Poor Sample Conversation 2](link_to_image)
 
 ## Recommendations
 
-1. Consider more advanced algorithms (e.g., A* or Dijkstra's) for complex mazes.
-2. Utilize heuristics and machine learning techniques to enhance efficiency.
-3. Increase computational resources for improved performance.
-4. Implement a robust obstacle detection and avoidance system.
-5. Carefully analyze specific problem requirements when choosing algorithms.
+Improvements are needed to address hard-coding limitations and delays in redirection. Implementing machine learning for learning from interactions and refining redirection logic can enhance the chatbot's accuracy and efficiency.
 
 ## References
 
-- Difference Between Machine Learning, Artificial Intelligence, And Bots. [Link](https://www.zymr.com/blog/difference-machine-learning-artificial-intelligence-bots#:~:text=This%20is%20the%20basic%20idea,intelligence%20to%20carry%20out%20tasks.)
-- Greedy Best First Search algorithm. [Link](https://www.geeksforgeeks.org/greedy-best-first-search-algorithm/)
-- Heap Data Structures. [Link](https://www.tutorialspoint.com/data_structures_algorithms/heap_data_structure.htm)
-- Informed Search Algorithms in AI. [Link](https://www.javatpoint.com/ai-informed-search-algorithms)
-- Munoz, D. G., Bouchereau, F., Vargas-Rosales, C., & Enriquez, R. (2009). Heuristic Approaches to the Position Location Problem. [Link](https://doi.org/10.1016/b978-0-12-374353-4.00010-7)
-- How to build an Artificial Intelligence Chatbot? Intellipaat Blog. [Link](https://intellipaat.com/blog/how-to-build-an-artificial-intelligence-chatbot/)
+[List of references with hyperlinks]
+
+## Contributions of Each Member
+
+- Gabriel Luis B. Bacosa: Documentation and Coding
+- Bianca Mari A. Cuales: Documentation and Coding
+- Kyle Carlo C. Lasala: Research, Documentation, and Coding
+- Alyza L. Reynado: Research and Documentation
