@@ -24,19 +24,22 @@ The chatbot efficiently prioritizes diseases and limits questions based on user 
 
 #### Impressive Sample Conversation 1
 *User assumed to have influenza*
-![Impressive Sample Conversation 1](link_to_image)
+![Impressive Sample Conversation 1](https://github.com/KyleCarlo/ChatBot/assets/90784458/5fa23ed3-2430-4bae-b550-b4bb7d371cfa)
 
 #### Impressive Sample Conversation 2
 *User assumed to have chickenpox with additional symptoms*
-![Impressive Sample Conversation 2](link_to_image)
+![Impressive Sample Conversation 2](https://github.com/KyleCarlo/ChatBot/assets/90784458/b8bf43b3-216f-4d53-9a30-6d10b2be2a9c)
+
 
 #### Poor Sample Conversation 1
 *User assumed to have tetanus*
-![Poor Sample Conversation 1](link_to_image)
+![Poor Sample Conversation 1](https://github.com/KyleCarlo/ChatBot/assets/90784458/3ebae0aa-adfd-4cb2-93c2-90ef0980a7c9)
+
 
 #### Poor Sample Conversation 2
 *User with no symptoms, defaulting to diarrhea*
-![Poor Sample Conversation 2](link_to_image)
+![Poor Sample Conversation 2](https://github.com/KyleCarlo/ChatBot/assets/90784458/bc547cdf-890c-4d75-9ed1-dbddca437a81)
+
 
 ## Recommendations
 
